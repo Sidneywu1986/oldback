@@ -1,0 +1,54 @@
+<view class="container">
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">💰 提现</text>
+    </view>
+    
+    <view class="balance-info">
+      <text class="balance-label">可提现余额</text>
+      <text class="balance-value">¥{{balance}}</text>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">提现金额</text>
+      <view class="amount-input-wrap">
+        <text class="amount-symbol">¥</text>
+        <input class="amount-input" type="digit" placeholder="请输入提现金额" value="{{formData.amount}}" bindinput="onAmountInput" />
+      </view>
+    </view>
+
+    <view class="quick-amounts">
+      <text class="quick-label">快捷金额</text>
+      <view class="quick-btns">
+        <view class="quick-btn" bindtap="setQuickAmount" data-amount="100">¥100</view>
+        <view class="quick-btn" bindtap="setQuickAmount" data-amount="500">¥500</view>
+        <view class="quick-btn" bindtap="setQuickAmount" data-amount="1000">¥1000</view>
+        <view class="quick-btn" bindtap="setQuickAmount" data-amount="all">全部</view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">收款方式</text>
+      <view class="payment-method">
+        <view class="method-item active">
+          <view class="method-icon">💳</view>
+          <view class="method-info">
+            <text class="method-name">微信零钱</text>
+            <text class="method-desc">提现至微信零钱</text>
+          </view>
+          <view class="method-check">✓</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="tips">
+      <text class="tip-item">• 提现最低金额为1元</text>
+      <text class="tip-item">• 提现到账时间：1-3个工作日</text>
+      <text class="tip-item">• 手续费：免费</text>
+    </view>
+  </view>
+
+  <button class="btn-primary submit-btn" bindtap="submitWithdraw" disabled="{{!canSubmit}}">
+    确认提现
+  </button>
+</view>

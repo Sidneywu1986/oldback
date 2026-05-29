@@ -1,0 +1,10 @@
+{
+  "name": "小程序管理",
+  "module": "miniapp",
+  "path": "/miniapp",
+  "icon": "Smartphone",
+  "permission": "miniapp:list",
+  "order": 43,
+  "admin_menu": true,
+  "api_prefix": "/api/v1/miniapp-configs"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "菜单管理",
+  "module": "menu",
+  "path": "/rbac/menus",
+  "icon": "Menu",
+  "permission": "menu:list",
+  "order": 14,
+  "admin_menu": true,
+  "api_prefix": "/api/v1/menus"
+}

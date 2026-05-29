@@ -1,0 +1,10 @@
+{
+  "name": "流程引擎",
+  "module": "workflow",
+  "path": "/workflow/defs",
+  "icon": "GitBranch",
+  "permission": "workflow:def",
+  "order": 30,
+  "admin_menu": true,
+  "api_prefix": "/api/v1/workflow"
+}

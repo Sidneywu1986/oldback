@@ -1,0 +1,31 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/recycle/recycle",
+    "pages/orders/orders",
+    "pages/points/points",
+    "pages/profile/profile",
+    "pages/login/login",
+    "pages/orders/detail",
+    "pages/orders/grab",
+    "pages/wallet/wallet",
+    "pages/wallet/withdraw",
+    "pages/wallet/recharge",
+    "pages/promotion/promotion"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "飞玖回收",
+    "navigationBarBackgroundColor": "#2563EB",
+    "backgroundColor": "#F5F7FA"
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "您的位置信息将用于定位附近订单和抢单服务"
+    }
+  },
+  "requiredBackgroundModes": ["location"],
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

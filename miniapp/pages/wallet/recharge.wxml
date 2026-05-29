@@ -1,0 +1,43 @@
+<view class="container">
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">💳 充值</text>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">充值金额</text>
+      <view class="amount-input-wrap">
+        <text class="amount-symbol">¥</text>
+        <input class="amount-input" type="digit" placeholder="请输入充值金额" value="{{formData.amount}}" bindinput="onAmountInput" />
+      </view>
+    </view>
+
+    <view class="quick-amounts">
+      <text class="quick-label">快捷金额</text>
+      <view class="quick-btns">
+        <view class="quick-btn" bindtap="setQuickAmount" data-amount="100">¥100</view>
+        <view class="quick-btn" bindtap="setQuickAmount" data-amount="200">¥200</view>
+        <view class="quick-btn" bindtap="setQuickAmount" data-amount="500">¥500</view>
+        <view class="quick-btn" bindtap="setQuickAmount" data-amount="1000">¥1000</view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">支付方式</text>
+      <view class="payment-method">
+        <view class="method-item active">
+          <view class="method-icon">💚</view>
+          <view class="method-info">
+            <text class="method-name">微信支付</text>
+            <text class="method-desc">安全快捷</text>
+          </view>
+          <view class="method-check">✓</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <button class="btn-primary submit-btn" bindtap="submitRecharge" disabled="{{!canSubmit}}">
+    立即充值 ¥{{formData.amount}}
+  </button>
+</view>

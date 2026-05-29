@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  :root {
+    --background: #ffffff;
+    --foreground: rgba(0,0,0,0.95);
+    --card: #ffffff;
+    --card-foreground: rgba(0,0,0,0.95);
+    --popover: #ffffff;
+    --popover-foreground: rgba(0,0,0,0.95);
+    --primary: #c41e3a;
+    --primary-foreground: #ffffff;
+    --secondary: #f6f5f4;
+    --secondary-foreground: rgba(0,0,0,0.95);
+    --muted: #f6f5f4;
+    --muted-foreground: #615d59;
+    --accent: #f6f5f4;
+    --accent-foreground: #c41e3a;
+    --destructive: #c41e3a;
+    --destructive-foreground: #ffffff;
+    --border: rgba(0,0,0,0.1);
+    --input: rgba(0,0,0,0.1);
+    --ring: #c41e3a;
+    --radius: 0.5rem;
+    
+    --warm-white: #f6f5f4;
+    --warm-dark: #31302e;
+    --warm-gray: #615d59;
+    --warm-gray-light: #a39e98;
+  }
+}
+
+@layer base {
+  html {
+    font-family: 'Inter', -apple-system, system-ui, Segoe UI, Helvetica, Arial, sans-serif;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  * {
+    border-color: rgba(0,0,0,0.1);
+  }
+}
+
+@layer components {
+  .notion-card {
+    @apply bg-white border border-[rgba(0,0,0,0.1)] rounded-xl shadow-notion-card;
+  }
+  
+  .notion-button-primary {
+    @apply bg-primary-red text-white px-4 py-2 rounded-xs font-medium text-sm transition-all duration-200 hover:bg-primary-red-dark active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-red/50;
+  }
+  
+  .notion-button-secondary {
+    @apply bg-[rgba(0,0,0,0.05)] text-[rgba(0,0,0,0.95)] px-4 py-2 rounded-xs font-medium text-sm transition-all duration-200 hover:bg-[rgba(0,0,0,0.08)] active:scale-95;
+  }
+  
+  .notion-button-ghost {
+    @apply bg-transparent text-[rgba(0,0,0,0.95)] px-4 py-2 rounded-xs font-medium text-sm transition-all duration-200 hover:underline;
+  }
+  
+  .notion-pill-badge {
+    @apply bg-[#f2f9ff] text-[#097fe8] px-2 py-1 rounded-pill text-xs font-semibold tracking-[0.01em];
+  }
+  
+  .notion-heading {
+    @apply font-bold tracking-heading;
+    line-height: 1.00;
+  }
+  
+  .notion-subheading {
+    @apply font-bold tracking-[0.01em];
+    line-height: 1.23;
+  }
+  
+  .whisper-border {
+    @apply border border-[rgba(0,0,0,0.1)];
+  }
+  
+  .warm-text {
+    @apply text-[rgba(0,0,0,0.95)];
+  }
+  
+  .warm-text-secondary {
+    @apply text-[#615d59];
+  }
+  
+  .warm-text-muted {
+    @apply text-[#a39e98];
+  }
+  
+  .alternating-section {
+    @apply bg-warm-white;
+  }
+}
+
+.sidebar-menu-item {
+  @apply flex items-center gap-3 px-4 py-2.5 text-sm text-[#615d59] rounded-lg transition-all cursor-pointer hover:bg-[rgba(0,0,0,0.05)] hover:text-[rgba(0,0,0,0.95)];
+}
+.sidebar-menu-item.active {
+  @apply bg-[rgba(196,30,58,0.1)] text-primary-red font-medium;
+}
+.sidebar-submenu-item {
+  @apply flex items-center gap-2 px-4 py-2 pl-11 text-sm text-[#a39e98] rounded-lg transition-all cursor-pointer hover:bg-[rgba(0,0,0,0.05)] hover:text-[rgba(0,0,0,0.95)];
+}
+.sidebar-submenu-item.active {
+  @apply bg-[rgba(196,30,58,0.1)] text-primary-red font-medium;
+}
+.status-badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+.status-pending { @apply bg-[rgba(221,91,0,0.1)] text-[#dd5b00]; }
+.status-passed { @apply bg-[rgba(26,174,57,0.1)] text-[#1aae39]; }
+.status-rejected { @apply bg-[rgba(196,30,58,0.1)] text-[#c41e3a]; }
+.status-stored { @apply bg-[rgba(0,117,222,0.1)] text-[#0075de]; }
+.status-disposed { @apply bg-[rgba(97,93,89,0.1)] text-[#615d59]; }
+.status-return { @apply bg-[rgba(221,91,0,0.1)] text-[#dd5b00]; }
+.status-closed { @apply bg-[rgba(163,158,152,0.2)] text-[#a39e98]; }
+.status-awarded { @apply bg-[rgba(57,28,87,0.1)] text-[#391c57]; }

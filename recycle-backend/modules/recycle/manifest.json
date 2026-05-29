@@ -1,0 +1,10 @@
+{
+  "name": "回收管理",
+  "module": "recycle",
+  "path": "/recycle",
+  "icon": "Recycle",
+  "permission": "recycle:list",
+  "order": 20,
+  "admin_menu": true,
+  "api_prefix": "/api/v1/recycle"
+}

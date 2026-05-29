@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: recycle-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./recycle.db:/app/recycle.db
+      - ./uploads:/app/uploads
+    environment:
+      - DATABASE_URL=sqlite:///./recycle.db
+      - JWT_SECRET_KEY=recycle-management-secret-key-2026
+      - JWT_ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=480
+      - UPLOAD_DIR=uploads
+      - CORS_ORIGINS=*
+    restart: unless-stopped
+
+  frontend:
+    image: nginx:alpine
+    container_name: recycle-frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./dist:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+    restart: unless-stopped

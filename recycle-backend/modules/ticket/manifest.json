@@ -1,0 +1,10 @@
+{
+  "name": "自定义工单",
+  "module": "ticket",
+  "path": "/tickets",
+  "icon": "Ticket",
+  "permission": "ticket:list",
+  "order": 42,
+  "admin_menu": true,
+  "api_prefix": "/api/v1/tickets"
+}

@@ -1,0 +1,90 @@
+<view class="container">
+  <view class="points-card">
+    <view class="points-header">
+      <text class="points-title">我的积分</text>
+      <text class="points-subtitle">积分可兑换礼品或提现</text>
+    </view>
+    <view class="points-amount">
+      <text class="amount-number">{{masterInfo.total_points || 0}}</text>
+      <text class="amount-unit">积分</text>
+    </view>
+    <view class="points-actions">
+      <view class="action-btn" bindtap="goToExchange">
+        <text class="action-icon">🎁</text>
+        <text class="action-text">积分兑换</text>
+      </view>
+      <view class="action-btn" bindtap="goToWithdraw">
+        <text class="action-icon">💰</text>
+        <text class="action-text">积分提现</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">📊 积分统计</text>
+    </view>
+    <view class="stats-list">
+      <view class="stat-item">
+        <text class="stat-value text-success">{{report.total_awarded || 0}}</text>
+        <text class="stat-label">累计获得</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value text-danger">{{report.total_consumed || 0}}</text>
+        <text class="stat-label">累计消耗</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value text-primary">{{report.net_change || 0}}</text>
+        <text class="stat-label">净变化</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">📝 积分记录</text>
+    </view>
+    <view class="record-list">
+      <view class="record-item" wx:for="{{records}}" wx:key="id">
+        <view class="record-icon" style="background: {{getRecordBg(item.points_type)}}">
+          <text>{{getRecordIcon(item.points_type)}}</text>
+        </view>
+        <view class="record-info">
+          <text class="record-type">{{getRecordType(item.points_type)}}</text>
+          <text class="record-time">{{item.create_time}}</text>
+        </view>
+        <text class="record-amount" style="color: {{item.points_amount > 0 ? '#10B981' : '#EF4444'}}">
+          {{item.points_amount > 0 ? '+' : ''}}{{item.points_amount}}
+        </text>
+      </view>
+    </view>
+    <view class="empty-state" wx:if="{{records.length === 0}}">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无积分记录</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">📖 积分规则</text>
+    </view>
+    <view class="rules-list">
+      <view class="rule-item">
+        <text class="rule-icon">1️⃣</text>
+        <text class="rule-text">每回收1元配件可获得1积分</text>
+      </view>
+      <view class="rule-item">
+        <text class="rule-icon">2️⃣</text>
+        <text class="rule-text">不同品类配件有积分倍率加成</text>
+      </view>
+      <view class="rule-item">
+        <text class="rule-icon">3️⃣</text>
+        <text class="rule-text">积分可兑换礼品或按比例提现</text>
+      </view>
+      <view class="rule-item">
+        <text class="rule-icon">4️⃣</text>
+        <text class="rule-text">积分有效期为永久有效</text>
+      </view>
+    </view>
+  </view>
+</view>

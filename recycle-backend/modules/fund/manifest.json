@@ -1,0 +1,10 @@
+{
+  "name": "资金管理",
+  "module": "fund",
+  "path": "/fund/accounts",
+  "icon": "Wallet",
+  "permission": "fund:list",
+  "order": 22,
+  "admin_menu": true,
+  "api_prefix": "/api/v1/fund"
+}

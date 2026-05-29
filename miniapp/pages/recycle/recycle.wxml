@@ -1,0 +1,79 @@
+<view class="container">
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">📦 选择配件分类</text>
+    </view>
+    <view class="category-grid">
+      <view class="category-item" wx:for="{{categories}}" wx:key="id" bindtap="selectCategory" data-id="{{item.id}}" data-name="{{item.name}}" data-ratio="{{item.points_ratio}}">
+        <view class="category-icon">{{getIcon(item.id)}}</view>
+        <text class="category-name">{{item.category_name}}</text>
+        <text class="category-ratio">积分倍率 {{item.points_ratio}}x</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">📝 填写信息</text>
+    </view>
+    <view class="form-item">
+      <text class="form-label">配件名称 *</text>
+      <input class="form-input" placeholder="请输入配件名称" value="{{formData.partsName}}" bindinput="onPartsNameInput" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">配件编号</text>
+      <input class="form-input" placeholder="请输入配件编号（选填）" value="{{formData.partsCode}}" bindinput="onPartsCodeInput" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">数量 *</text>
+      <view class="quantity-control">
+        <view class="qty-btn" bindtap="decreaseQty">-</view>
+        <input class="qty-input" type="number" value="{{formData.quantity}}" bindinput="onQuantityInput" />
+        <view class="qty-btn" bindtap="increaseQty">+</view>
+      </view>
+    </view>
+    <view class="form-item">
+      <text class="form-label">重量 (kg)</text>
+      <input class="form-input" type="digit" placeholder="请输入重量（选填）" value="{{formData.weight}}" bindinput="onWeightInput" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">备注</text>
+      <textarea class="form-textarea" placeholder="请输入备注信息（选填）" value="{{formData.remark}}" bindinput="onRemarkInput"></textarea>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">📷 上传图片</text>
+      <text class="card-tip">最多上传9张</text>
+    </view>
+    <view class="upload-area">
+      <view class="upload-item" wx:for="{{images}}" wx:key="index" bindtap="previewImage" data-index="{{index}}">
+        <image src="{{item}}" mode="aspectFill" />
+        <view class="delete-btn" bindtap="deleteImage" data-index="{{index}}">×</view>
+      </view>
+      <view class="upload-btn" bindtap="chooseImage" wx:if="{{images.length < 9}}">
+        <text class="upload-icon">+</text>
+        <text class="upload-text">添加图片</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="summary-item">
+      <text class="summary-label">预计积分</text>
+      <text class="summary-value text-primary font-bold">{{estimatedPoints}}</text>
+    </view>
+    <view class="summary-item">
+      <text class="summary-label">预计金额</text>
+      <text class="summary-value text-success font-bold">¥{{estimatedAmount}}</text>
+    </view>
+  </view>
+
+  <view class="submit-area">
+    <button class="btn-primary submit-btn" bindtap="submitOrder" disabled="{{!canSubmit}}">
+      提交回收申请
+    </button>
+    <text class="submit-tip">提交后将由管理员审核，请保持手机畅通</text>
+  </view>
+</view>

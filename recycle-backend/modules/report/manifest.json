@@ -1,0 +1,10 @@
+{
+  "name": "报表管理",
+  "module": "report",
+  "path": "",
+  "icon": "BarChart",
+  "permission": "",
+  "order": 98,
+  "admin_menu": false,
+  "api_prefix": "/api/v1/reports"
+}

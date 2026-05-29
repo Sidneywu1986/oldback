@@ -1,0 +1,57 @@
+<view class="container">
+  <view class="header">
+    <text class="title">🎁 优惠活动</text>
+    <text class="subtitle">专属福利等你来领</text>
+  </view>
+
+  <view class="activity-list">
+    <view class="activity-card" wx:for="{{activities}}" wx:key="id" bindtap="showActivityDetail" data-activity="{{item}}">
+      <view class="activity-header">
+        <view class="activity-type">
+          <text>{{getActivityTypeIcon(item.activity_type)}}</text>
+          <text class="type-label">{{item.activity_type_label}}</text>
+        </view>
+        <view class="activity-status" wx:if="{{item.is_active}}">
+          <text class="status-text">进行中</text>
+        </view>
+      </view>
+      
+      <view class="activity-body">
+        <text class="activity-name">{{item.name}}</text>
+        <text class="activity-desc">{{item.description}}</text>
+        <view class="activity-rules">
+          <view class="rule-item" wx:if="{{item.activity_type === 'full_reduction'}}">
+            <text class="rule-label">满</text>
+            <text class="rule-value">¥{{item.rules.threshold}}</text>
+            <text class="rule-label">减</text>
+            <text class="rule-value highlight">¥{{item.rules.discount}}</text>
+          </view>
+          <view class="rule-item" wx:if="{{item.activity_type === 'discount'}}">
+            <text class="rule-label">折扣</text>
+            <text class="rule-value highlight">{{(item.rules.rate * 10).toFixed(1)}}折</text>
+          </view>
+          <view class="rule-item" wx:if="{{item.activity_type === 'points_double'}}">
+            <text class="rule-label">积分</text>
+            <text class="rule-value highlight">{{item.rules.multiplier}}倍</text>
+          </view>
+          <view class="rule-item" wx:if="{{item.activity_type === 'new_user_gift'}}">
+            <text class="rule-value highlight">新人礼包</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="activity-footer">
+        <text class="activity-time">{{formatTime(item.start_time)}} - {{formatTime(item.end_time)}}</text>
+        <view class="participate-btn">
+          <text>立即参与</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:if="{{activities.length === 0 && !loading}}">
+    <text class="empty-icon">🎁</text>
+    <text class="empty-text">暂无可用活动</text>
+    <text class="empty-tip">关注我们，获取更多优惠</text>
+  </view>
+</view>

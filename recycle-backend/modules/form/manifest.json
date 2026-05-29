@@ -1,0 +1,10 @@
+{
+  "name": "自定义表单",
+  "module": "form",
+  "path": "/forms/builder",
+  "icon": "FormInput",
+  "permission": "form:list",
+  "order": 41,
+  "admin_menu": true,
+  "api_prefix": "/api/v1/form-defs"
+}

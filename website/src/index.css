@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: rgba(0,0,0,0.95);
+    --card: #ffffff;
+    --card-foreground: rgba(0,0,0,0.95);
+    --primary: #c41e3a;
+    --primary-foreground: #ffffff;
+    --secondary: #fafaf8;
+    --secondary-foreground: rgba(0,0,0,0.95);
+    --muted: #f6f5f4;
+    --muted-foreground: #615d59;
+    --border: rgba(0,0,0,0.08);
+    --ring: rgba(196,30,58,0.25);
+  }
+
+  html {
+    font-family: 'Inter', -apple-system, system-ui, 'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+    scroll-behavior: smooth;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    line-height: 1.6;
+    letter-spacing: -0.005em;
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  ::selection {
+    background: rgba(196,30,58,0.15);
+    color: rgba(0,0,0,0.95);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.015em;
+  }
+}
+
+@layer components {
+  .notion-card {
+    @apply bg-white rounded-2xl;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.04);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .notion-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.06);
+    transform: translateY(-1px);
+  }
+
+  .notion-card-deep {
+    @apply bg-white rounded-2xl;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.04);
+  }
+
+  .notion-button-primary {
+    @apply bg-primary-red text-white px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300;
+    box-shadow: 0 4px 20px rgba(196,30,58,0.3);
+  }
+  .notion-button-primary:hover {
+    @apply bg-[#a01830];
+    box-shadow: 0 6px 30px rgba(196,30,58,0.4);
+    transform: translateY(-0.5px);
+  }
+
+  .notion-button-secondary {
+    @apply bg-white text-[rgba(0,0,0,0.95)] px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300;
+    border: 2px solid rgba(0,0,0,0.08);
+  }
+  .notion-button-secondary:hover {
+    border-color: rgba(0,0,0,0.15);
+    background: #fafaf8;
+  }
+
+  .notion-pill-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold;
+    background: rgba(196,30,58,0.06);
+    color: #c41e3a;
+  }
+
+  .section-label {
+    @apply text-xs font-semibold tracking-[0.15em] uppercase mb-3;
+    color: #c41e3a;
+  }
+
+  .section-title {
+    @apply text-3xl lg:text-4xl font-black mb-4;
+    color: rgba(0,0,0,0.95);
+    letter-spacing: -0.025em;
+  }
+
+  .section-desc {
+    @apply text-lg leading-relaxed max-w-xl mx-auto;
+    color: #615d59;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-gradient {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .ring-subtle {
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.05);
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+}

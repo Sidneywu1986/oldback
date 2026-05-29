@@ -1,0 +1,10 @@
+{
+  "name": "营销活动",
+  "module": "promotion",
+  "path": "/promotions",
+  "icon": "Percent",
+  "permission": "",
+  "order": 97,
+  "admin_menu": true,
+  "api_prefix": "/api/v1/promotions"
+}

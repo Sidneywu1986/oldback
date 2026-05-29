@@ -1,0 +1,10 @@
+{
+  "name": "日志审计",
+  "module": "log",
+  "path": "/logs/login",
+  "icon": "FileText",
+  "permission": "log:login",
+  "order": 51,
+  "admin_menu": true,
+  "api_prefix": "/api/v1/logs"
+}

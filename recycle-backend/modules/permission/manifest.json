@@ -1,0 +1,10 @@
+{
+  "name": "权限管理",
+  "module": "permission",
+  "path": "/rbac/permissions",
+  "icon": "Shield",
+  "permission": "permission:list",
+  "order": 13,
+  "admin_menu": true,
+  "api_prefix": "/api/v1/permissions"
+}

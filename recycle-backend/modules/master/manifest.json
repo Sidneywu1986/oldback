@@ -1,0 +1,10 @@
+{
+  "name": "师傅管理",
+  "module": "master",
+  "path": "/masters",
+  "icon": "Wrench",
+  "permission": "master:list",
+  "order": 21,
+  "admin_menu": true,
+  "api_prefix": "/api/v1/masters"
+}

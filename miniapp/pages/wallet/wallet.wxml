@@ -1,0 +1,63 @@
+<view class="container">
+  <view class="balance-card">
+    <text class="balance-label">账户余额</text>
+    <view class="balance-amount">
+      <text class="amount-symbol">¥</text>
+      <text class="amount-number">{{account.balance || '0.00'}}</text>
+    </view>
+    <view class="balance-detail">
+      <view class="detail-item">
+        <text class="detail-value">¥{{account.frozen_balance || '0.00'}}</text>
+        <text class="detail-label">冻结金额</text>
+      </view>
+      <view class="detail-divider"></view>
+      <view class="detail-item">
+        <text class="detail-value">{{account.total_income || '0.00'}}</text>
+        <text class="detail-label">累计收入</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="action-card">
+    <view class="action-btn" bindtap="goToWithdraw">
+      <view class="action-icon">💰</view>
+      <text class="action-text">提现</text>
+    </view>
+    <view class="action-btn" bindtap="goToRecharge">
+      <view class="action-icon">💳</view>
+      <text class="action-text">充值</text>
+    </view>
+    <view class="action-btn" bindtap="goToTransfer">
+      <view class="action-icon">🔄</view>
+      <text class="action-text">转账</text>
+    </view>
+    <view class="action-btn" bindtap="goToRecords">
+      <view class="action-icon">📊</view>
+      <text class="action-text">账单</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">📝 最近交易</text>
+    </view>
+    <view class="record-list">
+      <view class="record-item" wx:for="{{transactions}}" wx:key="id">
+        <view class="record-icon" style="background: {{getTxnBg(item.txn_type)}}">
+          <text>{{getTxnIcon(item.txn_type)}}</text>
+        </view>
+        <view class="record-info">
+          <text class="record-type">{{getTxnType(item.txn_type)}}</text>
+          <text class="record-time">{{item.create_time}}</text>
+        </view>
+        <text class="record-amount" style="color: {{item.amount > 0 ? '#10B981' : '#EF4444'}}">
+          {{item.amount > 0 ? '+' : ''}}¥{{item.amount}}
+        </text>
+      </view>
+    </view>
+    <view class="empty-state" wx:if="{{transactions.length === 0}}">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无交易记录</text>
+    </view>
+  </view>
+</view>

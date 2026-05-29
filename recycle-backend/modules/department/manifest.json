@@ -1,0 +1,10 @@
+{
+  "name": "部门管理",
+  "module": "department",
+  "path": "/org/depts",
+  "icon": "Building2",
+  "permission": "dept:list",
+  "order": 15,
+  "admin_menu": true,
+  "api_prefix": "/api/v1/departments"
+}

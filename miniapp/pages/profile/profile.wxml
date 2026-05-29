@@ -1,0 +1,85 @@
+<view class="container">
+  <view class="user-card" wx:if="{{masterInfo}}">
+    <view class="user-avatar">
+      <text class="avatar-icon">👤</text>
+    </view>
+    <view class="user-info">
+      <text class="user-name">{{masterInfo.name}}</text>
+      <text class="user-phone">{{masterInfo.phone}}</text>
+    </view>
+    <view class="user-level">
+      <text class="level-text">{{masterInfo.level || '初级'}}</text>
+    </view>
+  </view>
+
+  <view class="stats-card">
+    <view class="stat-item" bindtap="goToOrders">
+      <text class="stat-value">{{orderStats.total}}</text>
+      <text class="stat-label">订单总数</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item" bindtap="goToPoints">
+      <text class="stat-value">{{masterInfo.total_points || 0}}</text>
+      <text class="stat-label">积分</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-value">{{masterInfo.credit_score || 100}}</text>
+      <text class="stat-label">信用分</text>
+    </view>
+  </view>
+
+  <view class="menu-card">
+    <view class="menu-item" bindtap="goToOrders">
+      <view class="menu-icon">📋</view>
+      <text class="menu-text">我的订单</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="goToPoints">
+      <view class="menu-icon">⭐</view>
+      <text class="menu-text">我的积分</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="goToWallet">
+      <view class="menu-icon">💰</view>
+      <text class="menu-text">我的钱包</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="goToTicket">
+      <view class="menu-icon">🎫</view>
+      <text class="menu-text">工单反馈</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="goToSettings">
+      <view class="menu-icon">⚙️</view>
+      <text class="menu-text">账户设置</text>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <view class="menu-card">
+    <view class="menu-item" bindtap="goToAbout">
+      <view class="menu-icon">ℹ️</view>
+      <text class="menu-text">关于我们</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="goToHelp">
+      <view class="menu-icon">❓</view>
+      <text class="menu-text">帮助中心</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="goToContact">
+      <view class="menu-icon">📞</view>
+      <text class="menu-text">联系客服</text>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+
+  <view class="login-card" wx:if="{{!masterInfo}}">
+    <view class="login-icon">🔒</view>
+    <text class="login-text">请先登录</text>
+    <button class="btn-primary login-btn" bindtap="goToLogin">立即登录</button>
+  </view>
+</view>

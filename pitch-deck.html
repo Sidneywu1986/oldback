@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>飞玖回收 · 项目推介方案书</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.min.css">
+<style>
+  :root {
+    --red: #c41e3a;
+    --red-dark: #a01830;
+    --red-light: rgba(196,30,58,0.06);
+    --text: rgba(0,0,0,0.95);
+    --text-secondary: #615d59;
+    --bg: #fafaf8;
+    --border: rgba(0,0,0,0.08);
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  .reveal { font-family: 'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { font-weight: 800; letter-spacing: -0.02em; text-transform: none; }
+  .reveal h1 { font-size: 2.8em; }
+  .reveal h2 { font-size: 2em; }
+  .reveal h3 { font-size: 1.2em; }
+  .reveal p, .reveal li { color: var(--text-secondary); }
+  .reveal .slides { text-align: left; }
+
+  .slide-cover { text-align: center !important; display: flex !important; flex-direction: column; justify-content: center; align-items: center; }
+  .slide-cover h1 { font-size: 3.2em; font-weight: 900; color: var(--text); margin-bottom: 0.2em; }
+  .slide-cover .subtitle { font-size: 1.1em; color: var(--text-secondary); margin-bottom: 1em; }
+  .slide-cover .tagline { font-size: 1.25em; font-weight: 600; color: var(--red); }
+
+  .slide-section { text-align: center !important; display: flex !important; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #1a1a1a 0%, #1c1114 100%) !important; }
+  .slide-section h2 { color: #fff !important; font-size: 2.4em; }
+  .slide-section .section-num { font-size: 0.9em; color: var(--red); font-weight: 700; letter-spacing: 0.15em; margin-bottom: 0.5em; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+  .card { background: #fff; border-radius: 16px; padding: 24px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .card-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; font-size: 20px; }
+  .card h4 { font-size: 0.95em; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .card p { font-size: 0.75em; line-height: 1.7; margin: 0; }
+
+  .metric-row { display: flex; gap: 30px; justify-content: center; margin: 30px 0; }
+  .metric { text-align: center; }
+  .metric .num { font-size: 2.4em; font-weight: 900; color: var(--red); line-height: 1.1; }
+  .metric .label { font-size: 0.75em; color: var(--text-secondary); margin-top: 4px; }
+
+  .arch-layer { background: #fff; border-radius: 14px; border: 1px solid var(--border); padding: 16px 24px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; }
+  .arch-layer .layer-tag { font-size: 0.7em; font-weight: 700; padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
+  .arch-layer .layer-content { font-size: 0.78em; color: var(--text-secondary); }
+
+  .timeline { display: flex; gap: 12px; margin-top: 24px; }
+  .timeline-item { flex: 1; text-align: center; padding: 20px 12px; background: #fff; border-radius: 14px; border: 1px solid var(--border); }
+  .timeline-item .phase { font-size: 0.7em; font-weight: 700; color: var(--red); margin-bottom: 4px; }
+  .timeline-item .period { font-size: 0.85em; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+  .timeline-item ul { list-style: none; padding: 0; margin: 0; }
+  .timeline-item li { font-size: 0.68em; color: var(--text-secondary); margin-bottom: 4px; }
+
+  .feature-row { display: flex; gap: 20px; align-items: stretch; }
+  .feature-card { flex: 1; background: #fff; border-radius: 16px; border: 1px solid var(--border); padding: 28px; position: relative; overflow: hidden; }
+  .feature-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .feature-card:nth-child(1)::before { background: var(--red); }
+  .feature-card:nth-child(2)::before { background: #0075de; }
+  .feature-card:nth-child(3)::before { background: #391c57; }
+  .feature-card h3 { font-size: 1em; color: var(--text); margin-bottom: 10px; }
+  .feature-card ul { list-style: none; padding: 0; margin: 0; }
+  .feature-card li { font-size: 0.72em; color: var(--text-secondary); padding: 4px 0; }
+  .feature-card li::before { content: '✓ '; color: var(--red); font-weight: 700; }
+
+  .tag { display: inline-block; font-size: 0.7em; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-right: 6px; }
+  .tag-red { background: var(--red-light); color: var(--red); }
+  .tag-blue { background: rgba(0,117,222,0.08); color: #0075de; }
+  .tag-green { background: rgba(26,174,57,0.08); color: #1aae39; }
+
+  .reveal .controls { color: var(--red); }
+  .reveal .progress { color: var(--red); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ====== 封面 ====== -->
+<section class="slide-cover">
+  <div style="margin-bottom: 16px;">
+    <span class="tag tag-red" style="font-size:0.75em; padding: 5px 14px;">维修行业旧件回收闭环平台</span>
+  </div>
+  <h1>飞玖回收</h1>
+  <p class="tagline">让每一件旧配件重获价值</p>
+  <p class="subtitle" style="margin-top: 20px;">项目推介方案书 · 2026</p>
+  <div style="margin-top: 40px; opacity: 0.5; font-size: 0.7em; color: var(--text-secondary);">
+    杭州飞玖网络科技有限公司
+  </div>
+</section>
+
+<!-- ====== Section: 项目背景 ====== -->
+<section class="slide-section">
+  <div class="section-num">PART 01</div>
+  <h2>项目背景与市场机会</h2>
+</section>
+
+<section>
+  <h3 style="color: var(--red); font-size: 0.85em; margin-bottom: 10px;">行业痛点</h3>
+  <div class="grid-2" style="margin-top: 20px;">
+    <div class="card" style="border-left: 3px solid var(--red);">
+      <h4>🔧 旧件管理混乱</h4>
+      <p>维修企业旧件堆积，库存管理靠 Excel，无统一评估体系，价值流失严重</p>
+    </div>
+    <div class="card" style="border-left: 3px solid #dd5b00;">
+      <h4>💰 回收渠道分散</h4>
+      <p>各地小作坊回收价不透明，企业议价能力弱，单笔利润被层层盘剥</p>
+    </div>
+    <div class="card" style="border-left: 3px solid #0075de;">
+      <h4>📋 合规风险突出</h4>
+      <p>环保法规趋严，无资质处置面临罚款风险，缺少合规处置闭环证明</p>
+    </div>
+    <div class="card" style="border-left: 3px solid #1aae39;">
+      <h4>📊 数据断层</h4>
+      <p>回收全链路数据缺失，企业无法量化回收效益，ESG报告缺乏数据支撑</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric"><div class="num">300<span style="font-size:0.5em;">亿</span></div><div class="label">家电回收市场规模</div></div>
+    <div class="metric"><div class="num">58<span style="font-size:0.5em;">万+</span></div><div class="label">维修企业存量</div></div>
+    <div class="metric"><div class="num">62<span style="font-size:0.5em;">%</span></div><div class="label">旧件未规范回收率</div></div>
+  </div>
+</section>
+
+<!-- ====== Section: 解决方案 ====== -->
+<section class="slide-section">
+  <div class="section-num">PART 02</div>
+  <h2>产品解决方案</h2>
+</section>
+
+<section>
+  <h3 style="color: var(--red); font-size: 0.85em; margin-bottom: 10px;">三位一体产品矩阵</h3>
+  <div class="feature-row">
+    <div class="feature-card">
+      <div style="font-size: 1.6em; margin-bottom: 10px;">📱</div>
+      <h3>师傅小程序</h3>
+      <ul>
+        <li>扫码录入旧件信息</li>
+        <li>AI 智能估价</li>
+        <li>GPS 定位 + 就近派单</li>
+        <li>实时物流追踪</li>
+        <li>微信支付即时结算</li>
+        <li>积分兑换商城</li>
+      </ul>
+    </div>
+    <div class="feature-card">
+      <div style="font-size: 1.6em; margin-bottom: 10px;">🖥️</div>
+      <h3>企业管理后台</h3>
+      <ul>
+        <li>多级审核流程引擎</li>
+        <li>资金账户管理</li>
+        <li>师傅资质认证</li>
+        <li>促销活动配置</li>
+        <li>数据看板与报表</li>
+        <li>角色权限管控</li>
+      </ul>
+    </div>
+    <div class="feature-card">
+      <div style="font-size: 1.6em; margin-bottom: 10px;">🌐</div>
+      <h3>品牌官网</h3>
+      <ul>
+        <li>企业品牌展示</li>
+        <li>服务方案介绍</li>
+        <li>成功案例展示</li>
+        <li>新闻资讯发布</li>
+        <li>在线客服咨询</li>
+        <li>SEO 搜索引擎优化</li>
+      </ul>
+    </div>
+  </div>
+  <p style="text-align:center; margin-top:24px; font-size:0.75em; color:var(--text-secondary);">
+    小程序 + Web 管理后台 + 品牌官网，覆盖 C端师傅、B端企业、公众品牌三大场景
+  </p>
+</section>
+
+<!-- ====== Section: 核心功能 ====== -->
+<section class="slide-section">
+  <div class="section-num">PART 03</div>
+  <h2>核心功能详解</h2>
+</section>
+
+<section>
+  <h3 style="color: var(--red); font-size: 0.85em; margin-bottom: 14px;">全链路闭环管理</h3>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-icon" style="background:rgba(196,30,58,0.08);">📍</div>
+      <h4>师傅端 · 定位接单</h4>
+      <p>微信原生定位 + 腾讯地图 SDK，LBS 就近派单，支持服务区域自定义。定位精度 < 50m，抢单响应平均 3 秒。</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(0,117,222,0.08);">🔍</div>
+      <h4>智能估价引擎</h4>
+      <p>基于历史交易数据的 AI 估价模型，结合品类、成色、市场行情多维度定价。估价准确率 > 95%，人工复核兜底。</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(26,174,57,0.08);">💳</div>
+      <h4>微信支付结算</h4>
+      <p>接入微信支付商户平台，支持订单确认后即时结算到师傅微信零钱。T+0 到账，手续费 < 0.6%。</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:rgba(57,28,87,0.08);">🎯</div>
+      <h4>精准营销引擎</h4>
+      <p>用户标签体系 + 个性化促销活动（满减/折扣/积分加倍/新人礼包），支持活动效果数据回溯分析。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h3 style="color: var(--red); font-size: 0.85em; margin-bottom: 14px;">管理后台 · 深度交互看板</h3>
+  <div class="grid-3">
+    <div class="card" style="text-align:center;">
+      <div style="font-size:2.2em; font-weight:900; color:var(--red);">6</div>
+      <div style="font-size:0.7em; color:var(--text-secondary);">实时数据卡片</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:2.2em; font-weight:900; color:var(--red);">12</div>
+      <div style="font-size:0.7em; color:var(--text-secondary);">图表联动交互</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:2.2em; font-weight:900; color:var(--red);">4</div>
+      <div style="font-size:0.7em; color:var(--text-secondary);">时间维度切换</div>
+    </div>
+  </div>
+  <div style="margin-top:20px; display:grid; grid-template-columns: repeat(4,1fr); gap:16px;">
+    <div style="background:var(--red-light); border-radius:12px; padding:14px 10px; text-align:center;">
+      <div style="font-size:0.65em; color:var(--text-secondary);">表格批量操作</div>
+      <div style="font-size:0.75em; font-weight:700; color:var(--text); margin-top:4px;">审批 · 删除 · 导出</div>
+    </div>
+    <div style="background:rgba(0,117,222,0.06); border-radius:12px; padding:14px 10px; text-align:center;">
+      <div style="font-size:0.65em; color:var(--text-secondary);">高级筛选器</div>
+      <div style="font-size:0.75em; font-weight:700; color:var(--text); margin-top:4px;">日期 · 类型 · 多条件</div>
+    </div>
+    <div style="background:rgba(26,174,57,0.06); border-radius:12px; padding:14px 10px; text-align:center;">
+      <div style="font-size:0.65em; color:var(--text-secondary);">操作下拉菜单</div>
+      <div style="font-size:0.75em; font-weight:700; color:var(--text); margin-top:4px;">紧凑 · 分组 · 危险操作</div>
+    </div>
+    <div style="background:rgba(57,28,87,0.06); border-radius:12px; padding:14px 10px; text-align:center;">
+      <div style="font-size:0.65em; color:var(--text-secondary);">CSV / Excel 导出</div>
+      <div style="font-size:0.75em; font-weight:700; color:var(--text); margin-top:4px;">中文不乱码</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section: 技术架构 ====== -->
+<section class="slide-section">
+  <div class="section-num">PART 04</div>
+  <h2>技术架构</h2>
+</section>
+
+<section>
+  <h3 style="color: var(--red); font-size: 0.85em; margin-bottom: 16px;">全栈技术选型</h3>
+
+  <div class="arch-layer">
+    <span class="layer-tag tag-red">小程序</span>
+    <div class="layer-content">微信原生开发（WXML + WXSS + JS）· 腾讯地图 SDK · 微信支付 API · 微信定位 API</div>
+  </div>
+  <div class="arch-layer">
+    <span class="layer-tag tag-blue">Web 前端</span>
+    <div class="layer-content">React 19 + TypeScript · Vite 7 · Tailwind CSS 3 · shadcn/ui · Recharts · React Router 6</div>
+  </div>
+  <div class="arch-layer">
+    <span class="layer-tag tag-green">后端 API</span>
+    <div class="layer-content">Python FastAPI · SQLAlchemy ORM · Pydantic 验证 · JWT 认证 · RESTful 设计</div>
+  </div>
+  <div class="arch-layer">
+    <span class="layer-tag" style="background:rgba(57,28,87,0.08); color:#391c57;">数据库</span>
+    <div class="layer-content">MySQL（生产）/ SQLite（开发）· Alembic 迁移 · 索引优化</div>
+  </div>
+  <div class="arch-layer">
+    <span class="layer-tag" style="background:rgba(0,0,0,0.05); color:var(--text);">部署</span>
+    <div class="layer-content">Nginx 反向代理 · Docker 容器化 · HTTPS · CDN 静态资源加速</div>
+  </div>
+
+  <div style="text-align:center; margin-top:20px;">
+    <span class="tag tag-red">React 19</span>
+    <span class="tag tag-blue">TypeScript</span>
+    <span class="tag tag-green">FastAPI</span>
+    <span class="tag" style="background:rgba(57,28,87,0.08);color:#391c57;">MySQL</span>
+    <span class="tag" style="background:rgba(241,91,0,0.08);color:#f15b00;">Vite</span>
+    <span class="tag" style="background:rgba(0,0,0,0.04);color:var(--text-secondary);">Docker</span>
+  </div>
+</section>
+
+<!-- ====== Section: 商业模式 ====== -->
+<section class="slide-section">
+  <div class="section-num">PART 05</div>
+  <h2>商业模式</h2>
+</section>
+
+<section>
+  <h3 style="color: var(--red); font-size: 0.85em; margin-bottom: 14px;">四层盈利模型</h3>
+  <div class="grid-2">
+    <div class="card" style="text-align:center;">
+      <div style="font-size:1.8em; margin-bottom:8px;">📦</div>
+      <h4 style="font-size:0.9em;">交易佣金</h4>
+      <p style="font-size:0.72em;">每笔回收订单收取 3-5% 平台服务费，按年回收 100 万件、均价 500 元计算，年佣金收入 1500-2500 万元</p>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:1.8em; margin-bottom:8px;">♻️</div>
+      <h4 style="font-size:0.9em;">差价利润</h4>
+      <p style="font-size:0.72em;">集中采购 + 规模化处置，旧件回收端与处置端的价差利润，成熟期毛利率可达 15-20%</p>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:1.8em; margin-bottom:8px;">🏅</div>
+      <h4 style="font-size:0.9em;">增值服务</h4>
+      <p style="font-size:0.72em;">企业定制看板、碳减排认证报告、ESG 数据服务、供应链金融服务，年费制，单客户 5-20 万元/年</p>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:1.8em; margin-bottom:8px;">📊</div>
+      <h4 style="font-size:0.9em;">数据变现</h4>
+      <p style="font-size:0.72em;">回收品类、区域、价格等行业数据报告，面向品牌厂商和行业协会提供数据咨询服务</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section: 竞争优势 ====== -->
+<section class="slide-section">
+  <div class="section-num">PART 06</div>
+  <h2>竞争优势</h2>
+</section>
+
+<section>
+  <div class="grid-2" style="margin-top:10px;">
+    <div class="card" style="border-top:3px solid var(--red);">
+      <h4>🔐 全链路数字化</h4>
+      <p style="font-size:0.72em;">从下单→估价→审核→结算全流程线上化，数据可追溯、可审计，告别纸质单据和 Excel 管理</p>
+    </div>
+    <div class="card" style="border-top:3px solid #0075de;">
+      <h4>🤖 AI 智能估价</h4>
+      <p style="font-size:0.72em;">基于历史交易的 AI 估价引擎，避免人为压价，保障师傅和企业双方利益，估价准确率 > 95%</p>
+    </div>
+    <div class="card" style="border-top:3px solid #1aae39;">
+      <h4>🔗 闭环合规</h4>
+      <p style="font-size:0.72em;">合作处置企业均具备国家环保资质，提供处置证明和碳减排报告，帮助企业合规达标</p>
+    </div>
+    <div class="card" style="border-top:3px solid #391c57;">
+      <h4>🌐 网络效应</h4>
+      <p style="font-size:0.72em;">师傅越多→回收越多→定价越准→吸引更多师傅，双边网络效应形成竞争壁垒</p>
+    </div>
+  </div>
+  <div style="margin-top:24px; background: var(--bg); border-radius:14px; padding:20px 24px; border:1px solid var(--border);">
+    <p style="font-size:0.72em; color: var(--text-secondary); margin:0;">
+      <span style="color:var(--red); font-weight:700;">差异化定位：</span>
+      不同于传统回收商「低价收、高价卖」的贸易模式，飞玖回收以 <span style="color:var(--text); font-weight:600;">SaaS 平台 + 交易撮合</span> 为核心，
+      解决维修企业「旧件怎么管、怎么卖、怎么合规」的一站式需求，而非简单的信息撮合。
+    </p>
+  </div>
+</section>
+
+<!-- ====== Section: 发展路线 ====== -->
+<section class="slide-section">
+  <div class="section-num">PART 07</div>
+  <h2>发展路线图</h2>
+</section>
+
+<section>
+  <div class="timeline">
+    <div class="timeline-item" style="border-top:3px solid var(--red);">
+      <div class="phase">Phase 1</div>
+      <div class="period">2026.Q1-Q2</div>
+      <ul>
+        <li>MVP 产品上线</li>
+        <li>杭州区域试点</li>
+        <li>首批 500 师傅</li>
+        <li>核心流程闭环</li>
+      </ul>
+    </div>
+    <div class="timeline-item" style="border-top:3px solid #dd5b00;">
+      <div class="phase">Phase 2</div>
+      <div class="period">2026.Q3-Q4</div>
+      <ul>
+        <li>浙江省全覆盖</li>
+        <li>微信支付上线</li>
+        <li>促销引擎上线</li>
+        <li>师傅 > 3000 人</li>
+      </ul>
+    </div>
+    <div class="timeline-item" style="border-top:3px solid #0075de;">
+      <div class="phase">Phase 3</div>
+      <div class="period">2027.H1</div>
+      <ul>
+        <li>华东六省扩展</li>
+        <li>AI 估价 2.0</li>
+        <li>企业版 SaaS</li>
+        <li>营收破千万</li>
+      </ul>
+    </div>
+    <div class="timeline-item" style="border-top:3px solid #391c57;">
+      <div class="phase">Phase 4</div>
+      <div class="period">2027.H2+</div>
+      <ul>
+        <li>全国市场覆盖</li>
+        <li>供应链金融</li>
+        <li>碳交易接入</li>
+        <li>A 轮融资</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section: 团队 ====== -->
+<section class="slide-section">
+  <div class="section-num">PART 08</div>
+  <h2>核心团队</h2>
+</section>
+
+<section>
+  <div class="grid-2">
+    <div class="card" style="border-left:3px solid var(--red);">
+      <h4>CEO · 创始人</h4>
+      <p style="font-size:0.72em;">10年+ 家电回收行业经验，曾任国内头部回收企业区域总经理，深度理解旧件回收产业链</p>
+    </div>
+    <div class="card" style="border-left:3px solid #0075de;">
+      <h4>CTO · 联合创始人</h4>
+      <p style="font-size:0.72em;">前阿里 P8 技术专家，10年+ 全栈开发经验，主导过多款 DAU 百万级小程序产品</p>
+    </div>
+    <div class="card" style="border-left:3px solid #1aae39;">
+      <h4>COO · 运营合伙人</h4>
+      <p style="font-size:0.72em;">前美团区域运营总监，擅长地推团队管理和 B2B 平台冷启动，操盘过万人级师傅平台</p>
+    </div>
+    <div class="card" style="border-left:3px solid #391c57;">
+      <h4>CPO · 产品合伙人</h4>
+      <p style="font-size:0.72em;">前滴滴出行高级产品经理，曾从 0 到 1 搭建司机端产品体系，精通双边平台产品设计</p>
+    </div>
+  </div>
+  <div style="text-align:center; margin-top:24px;">
+    <span class="tag tag-red">行业专家</span>
+    <span class="tag tag-blue">技术大牛</span>
+    <span class="tag tag-green">运营老兵</span>
+    <span class="tag" style="background:rgba(57,28,87,0.08);color:#391c57;">产品高手</span>
+    <span class="tag" style="background:rgba(0,0,0,0.04);color:var(--text-secondary);">互补团队</span>
+  </div>
+</section>
+
+<!-- ====== Section: 融资计划 ====== -->
+<section class="slide-section">
+  <div class="section-num">PART 09</div>
+  <h2>融资规划</h2>
+</section>
+
+<section>
+  <div style="text-align:center; margin-bottom:30px;">
+    <div style="font-size:3em; font-weight:900; color:var(--red); letter-spacing:-0.02em;">¥1,500<span style="font-size:0.5em;"> 万</span></div>
+    <div style="font-size:0.8em; color:var(--text-secondary);">Pre-A 轮目标融资金额</div>
+  </div>
+  <div class="grid-3" style="margin-top:20px;">
+    <div class="card" style="text-align:center;">
+      <div style="font-weight:800; color:var(--red); font-size:0.9em; margin-bottom:6px;">40%</div>
+      <p style="font-size:0.7em;">技术研发 · AI 估价引擎升级 + 平台功能迭代</p>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-weight:800; color:#0075de; font-size:0.9em; margin-bottom:6px;">35%</div>
+      <p style="font-size:0.7em;">市场拓展 · 浙江全省 + 华东六省地推团队建设</p>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-weight:800; color:#1aae39; font-size:0.9em; margin-bottom:6px;">25%</div>
+      <p style="font-size:0.7em;">运营储备 · 供应链优化 + 合规资质 + 团队扩充</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====== 结尾 ====== -->
+<section class="slide-cover" style="background: linear-gradient(135deg, #1a1a1a 0%, #1c1114 100%) !important;">
+  <h2 style="color: #fff; font-size: 1.6em; margin-bottom: 12px;">让每一件旧配件重获价值</h2>
+  <p style="color: rgba(255,255,255,0.5); font-size: 0.85em; margin-bottom: 30px;">期待与您携手，共建维修行业旧件回收数字化生态</p>
+  <div style="display:flex; gap:40px; justify-content:center;">
+    <div style="text-align:center;"><div style="font-size:1.2em; font-weight:700; color:#fff;">400-888-9999</div><div style="font-size:0.65em; color:rgba(255,255,255,0.35);">商务合作热线</div></div>
+    <div style="text-align:center;"><div style="font-size:1.2em; font-weight:700; color:#fff;">business@feijiu.com</div><div style="font-size:0.65em; color:rgba(255,255,255,0.35);">商务合作邮箱</div></div>
+  </div>
+  <div style="margin-top: 50px; opacity: 0.3; font-size: 0.65em; color: #fff;">
+    杭州飞玖网络科技有限公司 · 浙江省杭州市余杭区未来科技城
+  </div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.min.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    width: 1280,
+    height: 800,
+    margin: 0.08,
+    minScale: 0.5,
+    maxScale: 2.0,
+    controls: true,
+    progress: true,
+    center: false,
+    transition: 'slide',
+    transitionSpeed: 'default',
+  });
+</script>
+</body>
+</html>

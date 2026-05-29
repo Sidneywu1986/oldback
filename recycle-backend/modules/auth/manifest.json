@@ -1,0 +1,10 @@
+{
+  "name": "认证",
+  "module": "auth",
+  "path": "/login",
+  "icon": "LogIn",
+  "permission": "",
+  "order": 0,
+  "admin_menu": false,
+  "api_prefix": "/api/v1/auth"
+}
