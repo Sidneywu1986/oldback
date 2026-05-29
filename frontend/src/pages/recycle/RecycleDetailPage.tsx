@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
-import { ArrowLeft, CheckCircle, XCircle, Package, Award, RotateCcw, ImageIcon } from "lucide-react";
+import { ArrowLeft, CheckCircle, XCircle, Package, Award, RotateCcw, ImageIcon, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +23,12 @@ export default function RecycleDetailPage() {
   const [order, setOrder] = useState<RecycleOrder | null>(null);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState(0);
+
+  const images = order
+    ? [order.old_parts_img, order.new_parts_img].filter(Boolean) as string[]
+    : [];
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -116,11 +122,27 @@ export default function RecycleDetailPage() {
           <CardContent>
             <div className="grid grid-cols-1 gap-3">
               {order.old_parts_img ? (
-                <img src={order.old_parts_img} alt="旧件" className="aspect-square object-cover rounded-lg" />
+                <img
+                  src={order.old_parts_img}
+                  alt="旧件"
+                  className="aspect-square object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                  onClick={() => { setPreviewIndex(images.indexOf(order.old_parts_img!) >= 0 ? images.indexOf(order.old_parts_img!) : 0); setPreviewOpen(true); }}
+                />
               ) : (
                 <div className="aspect-square bg-slate-100 rounded-lg flex items-center justify-center">
                   <ImageIcon size={48} className="text-slate-300" />
                 </div>
+              )}
+              {order.new_parts_img && (
+                <>
+                  <div className="text-xs text-slate-500 mt-1">新件照片</div>
+                  <img
+                    src={order.new_parts_img}
+                    alt="新件"
+                    className="aspect-square object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                    onClick={() => { setPreviewIndex(images.indexOf(order.new_parts_img!) >= 0 ? images.indexOf(order.new_parts_img!) : 0); setPreviewOpen(true); }}
+                  />
+                </>
               )}
             </div>
           </CardContent>
@@ -196,6 +218,51 @@ export default function RecycleDetailPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Image Preview Lightbox */}
+      {previewOpen && images.length > 0 && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
+          onClick={() => setPreviewOpen(false)}
+        >
+          <button
+            className="absolute top-4 right-4 text-white/80 hover:text-white p-2"
+            onClick={() => setPreviewOpen(false)}
+          >
+            <X size={28} />
+          </button>
+          {images.length > 1 && (
+            <>
+              <button
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-2 disabled:opacity-30"
+                disabled={previewIndex === 0}
+                onClick={(e) => { e.stopPropagation(); setPreviewIndex((i) => Math.max(0, i - 1)); }}
+              >
+                <ChevronLeft size={32} />
+              </button>
+              <button
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-2 disabled:opacity-30"
+                disabled={previewIndex === images.length - 1}
+                onClick={(e) => { e.stopPropagation(); setPreviewIndex((i) => Math.min(images.length - 1, i + 1)); }}
+              >
+                <ChevronRight size={32} />
+              </button>
+            </>
+          )}
+          <div className="max-w-[90vw] max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={images[previewIndex]}
+              alt={`预览 ${previewIndex + 1}/${images.length}`}
+              className="max-w-full max-h-[90vh] object-contain rounded-lg"
+            />
+            {images.length > 1 && (
+              <div className="text-center text-white/70 text-sm mt-2">
+                {previewIndex + 1} / {images.length}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
