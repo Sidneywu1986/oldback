@@ -27,6 +27,14 @@
   border-left: 4rpx solid #2563EB;
 }
 
+.map-card {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
 .info-list {
   display: flex;
   flex-direction: column;

@@ -38,6 +38,24 @@ Page({
         this.setData({
           order: order,
           images: images,
+          mapMarkers: order.lat && order.lng ? [{
+            id: 0,
+            latitude: order.lat,
+            longitude: order.lng,
+            title: order.address || '回收点',
+            iconPath: '/images/marker.png',
+            width: 30,
+            height: 30,
+            callout: {
+              content: order.address || order.parts_name,
+              color: '#1F2937',
+              fontSize: 12,
+              borderRadius: 8,
+              bgColor: '#FFFFFF',
+              padding: 8,
+              display: 'ALWAYS'
+            }
+          }] : [],
           ...this.getStatusInfo(order.status)
         })
       })
