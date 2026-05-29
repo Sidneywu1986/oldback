@@ -1,4 +1,5 @@
 const app = getApp()
+const { request } = require('../../utils/request')
 
 Page({
   data: {
@@ -26,40 +27,19 @@ Page({
   },
 
   loadTodayStats: function () {
-    const token = app.globalData.token
-    if (!token) return
-
-    wx.request({
-      url: `${app.globalData.baseUrl}/dashboard/stats`,
-      method: 'GET',
-      header: { 'Authorization': `Bearer ${token}` },
-      success: (res) => {
-        if (res.data.code === 200) {
-          this.setData({
-            todayStats: res.data.data
-          })
-        }
-      }
-    })
+    if (!app.globalData.token) return
+    request({ url: '/dashboard/stats' })
+      .then((res) => {
+        this.setData({ todayStats: res.data })
+      })
   },
 
   loadRecentOrders: function () {
-    const token = app.globalData.token
-    if (!token) return
-
-    wx.request({
-      url: `${app.globalData.baseUrl}/recycle/orders`,
-      method: 'GET',
-      header: { 'Authorization': `Bearer ${token}` },
-      data: { page: 1, size: 3 },
-      success: (res) => {
-        if (res.data.code === 200) {
-          this.setData({
-            recentOrders: res.data.data.list || []
-          })
-        }
-      }
-    })
+    if (!app.globalData.token) return
+    request({ url: '/recycle/orders', data: { page: 1, size: 3 } })
+      .then((res) => {
+        this.setData({ recentOrders: res.data.list || [] })
+      })
   },
 
   goToRecycle: function () {

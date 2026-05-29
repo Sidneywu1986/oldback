@@ -1,23 +1,36 @@
 import { Routes, Route } from "react-router";
+import { useState, useEffect } from "react";
 import type { RouteObject } from "react-router";
 
-// Auto-discover frontend routes from modules/
+// Auto-discover frontend routes from modules/ (async = code-split per module)
 const routeModules = import.meta.glob<{ routes: RouteObject[] }>(
-  "./modules/*/index.tsx",
-  { eager: true }
+  "./modules/*/index.tsx"
 );
 
-const dynamicRoutes: RouteObject[] = [];
-for (const mod of Object.values(routeModules)) {
-  if (mod.routes && Array.isArray(mod.routes)) {
-    dynamicRoutes.push(...mod.routes);
-  }
-}
-
 function App() {
+  const [routes, setRoutes] = useState<RouteObject[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all(Object.values(routeModules).map((fn) => fn()))
+      .then((mods) => {
+        const all = mods.flatMap((m) => m.routes || []);
+        setRoutes(all);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
+
   return (
     <Routes>
-      {dynamicRoutes.map((route, index) => (
+      {routes.map((route, index) => (
         <Route key={index} path={route.path} element={route.element} />
       ))}
     </Routes>

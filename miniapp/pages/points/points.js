@@ -1,4 +1,5 @@
 const app = getApp()
+const { request } = require('../../utils/request')
 
 Page({
   data: {
@@ -14,52 +15,27 @@ Page({
   },
 
   loadMasterInfo: function () {
-    const token = app.globalData.token
-    if (!token) return
-
-    wx.request({
-      url: `${app.globalData.baseUrl}/masters/me`,
-      method: 'GET',
-      header: { 'Authorization': `Bearer ${token}` },
-      success: (res) => {
-        if (res.data.code === 200) {
-          this.setData({ masterInfo: res.data.data })
-        }
-      }
-    })
+    if (!app.globalData.token) return
+    request({ url: '/masters/me' })
+      .then((res) => {
+        this.setData({ masterInfo: res.data })
+      })
   },
 
   loadPointsReport: function () {
-    const token = app.globalData.token
-    if (!token) return
-
-    wx.request({
-      url: `${app.globalData.baseUrl}/reports/points`,
-      method: 'GET',
-      header: { 'Authorization': `Bearer ${token}` },
-      success: (res) => {
-        if (res.data.code === 200) {
-          this.setData({ report: res.data.data })
-        }
-      }
-    })
+    if (!app.globalData.token) return
+    request({ url: '/reports/points' })
+      .then((res) => {
+        this.setData({ report: res.data })
+      })
   },
 
   loadPointsRecords: function () {
-    const token = app.globalData.token
-    if (!token) return
-
-    wx.request({
-      url: `${app.globalData.baseUrl}/fund/points-records`,
-      method: 'GET',
-      header: { 'Authorization': `Bearer ${token}` },
-      data: { page: 1, size: 20 },
-      success: (res) => {
-        if (res.data.code === 200) {
-          this.setData({ records: res.data.data.list || [] })
-        }
-      }
-    })
+    if (!app.globalData.token) return
+    request({ url: '/fund/points-records', data: { page: 1, size: 20 } })
+      .then((res) => {
+        this.setData({ records: res.data.list || [] })
+      })
   },
 
   getRecordIcon: function (type) {

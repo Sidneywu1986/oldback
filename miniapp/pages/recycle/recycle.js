@@ -1,4 +1,5 @@
 const app = getApp()
+const { request } = require('../../utils/request')
 
 Page({
   data: {
@@ -22,17 +23,10 @@ Page({
   },
 
   loadCategories: function () {
-    wx.request({
-      url: `${app.globalData.baseUrl}/recycle/parts-categories`,
-      method: 'GET',
-      success: (res) => {
-        if (res.data.code === 200) {
-          this.setData({
-            categories: res.data.data || []
-          })
-        }
-      }
-    })
+    request({ url: '/recycle/parts-categories', loading: false })
+      .then((res) => {
+        this.setData({ categories: res.data || [] })
+      })
   },
 
   getIcon: function (id) {
@@ -186,32 +180,24 @@ Page({
       images: this.data.images.join(',')
     }
 
-    wx.showLoading({ title: '提交中...' })
-
-    wx.request({
-      url: `${app.globalData.baseUrl}/recycle/orders`,
+    request({
+      url: '/recycle/orders',
       method: 'POST',
-      header: { 'Authorization': `Bearer ${token}` },
       data: data,
-      success: (res) => {
-        wx.hideLoading()
-        if (res.data.code === 200) {
-          wx.showModal({
-            title: '提交成功',
-            content: '回收申请已提交，请等待审核',
-            showCancel: false,
-            success: () => {
-              wx.switchTab({ url: '/pages/orders/orders' })
-            }
-          })
-        } else {
-          wx.showToast({ title: res.data.msg || '提交失败', icon: 'none' })
-        }
-      },
-      fail: () => {
-        wx.hideLoading()
-        wx.showToast({ title: '网络请求失败', icon: 'none' })
-      }
+      loading: true
     })
+      .then(() => {
+        wx.showModal({
+          title: '提交成功',
+          content: '回收申请已提交，请等待审核',
+          showCancel: false,
+          success: () => {
+            wx.switchTab({ url: '/pages/orders/orders' })
+          }
+        })
+      })
+      .catch((err) => {
+        wx.showToast({ title: err.message || '提交失败', icon: 'none' })
+      })
   }
 })

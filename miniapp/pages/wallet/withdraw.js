@@ -1,4 +1,5 @@
 const app = getApp()
+const { request } = require('../../utils/request')
 
 Page({
   data: {
@@ -14,22 +15,14 @@ Page({
   },
 
   loadBalance: function () {
-    const token = app.globalData.token
-    if (!token) {
+    if (!app.globalData.token) {
       wx.navigateTo({ url: '/pages/login/login' })
       return
     }
-
-    wx.request({
-      url: `${app.globalData.baseUrl}/fund/account`,
-      method: 'GET',
-      header: { 'Authorization': `Bearer ${token}` },
-      success: (res) => {
-        if (res.data.code === 200) {
-          this.setData({ balance: res.data.data.balance || '0.00' })
-        }
-      }
-    })
+    request({ url: '/fund/account' })
+      .then((res) => {
+        this.setData({ balance: res.data.balance || '0.00' })
+      })
   },
 
   onAmountInput: function (e) {
@@ -78,31 +71,22 @@ Page({
   },
 
   doWithdraw: function (amount) {
-    const token = app.globalData.token
-    if (!token) return
+    if (!app.globalData.token) return
 
-    wx.showLoading({ title: '处理中...' })
-
-    wx.request({
-      url: `${app.globalData.baseUrl}/fund/withdraw`,
+    request({
+      url: '/fund/withdraw',
       method: 'POST',
-      header: { 'Authorization': `Bearer ${token}` },
       data: { amount },
-      success: (res) => {
-        wx.hideLoading()
-        if (res.data.code === 200) {
-          wx.showToast({ title: '提现申请已提交', icon: 'success' })
-          setTimeout(() => {
-            wx.navigateBack()
-          }, 1500)
-        } else {
-          wx.showToast({ title: res.data.msg || '提现失败', icon: 'none' })
-        }
-      },
-      fail: () => {
-        wx.hideLoading()
-        wx.showToast({ title: '网络请求失败', icon: 'none' })
-      }
+      loading: true
     })
+      .then(() => {
+        wx.showToast({ title: '提现申请已提交', icon: 'success' })
+        setTimeout(() => {
+          wx.navigateBack()
+        }, 1500)
+      })
+      .catch((err) => {
+        wx.showToast({ title: err.message || '提现失败', icon: 'none' })
+      })
   }
 })

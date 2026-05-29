@@ -1,4 +1,5 @@
 const app = getApp()
+const { request } = require('../../utils/request')
 
 Page({
   data: {
@@ -12,43 +13,37 @@ Page({
   onLoad: function (options) {
     const id = options.id
     if (id) {
+      this.setData({ orderId: id })
       this.loadOrder(id)
     }
   },
 
+  onPullDownRefresh: function () {
+    if (this.data.orderId) {
+      this.loadOrder(this.data.orderId)
+    }
+    wx.stopPullDownRefresh()
+  },
+
   loadOrder: function (id) {
-    const token = app.globalData.token
-    if (!token) {
+    if (!app.globalData.token) {
       wx.navigateTo({ url: '/pages/login/login' })
       return
     }
 
-    wx.showLoading({ title: '加载中...' })
-
-    wx.request({
-      url: `${app.globalData.baseUrl}/recycle/orders/${id}`,
-      method: 'GET',
-      header: { 'Authorization': `Bearer ${token}` },
-      success: (res) => {
-        wx.hideLoading()
-        if (res.data.code === 200) {
-          const order = res.data.data
-          const images = order.images ? order.images.split(',') : []
-          
-          this.setData({
-            order: order,
-            images: images,
-            ...this.getStatusInfo(order.status)
-          })
-        } else {
-          wx.showToast({ title: '获取订单失败', icon: 'none' })
-        }
-      },
-      fail: () => {
-        wx.hideLoading()
-        wx.showToast({ title: '网络请求失败', icon: 'none' })
-      }
-    })
+    request({ url: `/recycle/orders/${id}`, loading: true })
+      .then((res) => {
+        const order = res.data
+        const images = order.images ? order.images.split(',') : []
+        this.setData({
+          order: order,
+          images: images,
+          ...this.getStatusInfo(order.status)
+        })
+      })
+      .catch(() => {
+        wx.showToast({ title: '获取订单失败', icon: 'none' })
+      })
   },
 
   getStatusInfo: function (status) {
@@ -95,5 +90,36 @@ Page({
       content: '客服电话：400-123-4567',
       showCancel: false
     })
+  },
+
+  copyOrderNo: function () {
+    wx.setClipboardData({
+      data: this.data.order.order_no || '',
+      success: () => {
+        wx.showToast({ title: '订单号已复制', icon: 'success' })
+      }
+    })
+  },
+
+  goToMaster: function () {
+    const masterId = this.data.order.master_id
+    if (masterId) {
+      wx.navigateTo({ url: `/pages/profile/profile?masterId=${masterId}` })
+    }
+  },
+
+  getActionButtons: function () {
+    const status = this.data.order.status
+    const buttons = []
+    if (status === 0) {
+      buttons.push({ text: '等待审核', type: 'primary', disabled: true })
+    } else if (status === 1) {
+      buttons.push({ text: '审核通过', type: 'primary', disabled: true })
+    } else if (status === 2) {
+      buttons.push({ text: '已驳回', type: 'warn', disabled: true })
+    } else if (status === 3 || status === 4 || status === 7) {
+      buttons.push({ text: '已完成', type: 'default', disabled: true })
+    }
+    return buttons
   }
 })

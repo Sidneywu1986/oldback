@@ -1,4 +1,5 @@
 const app = getApp()
+const { request } = require('../../utils/request')
 
 Page({
   data: {
@@ -35,34 +36,24 @@ Page({
 
     const amount = parseFloat(this.data.formData.amount)
 
-    wx.showLoading({ title: '正在发起支付...' })
-
-    const token = app.globalData.token
-    if (!token) {
-      wx.hideLoading()
+    if (!app.globalData.token) {
       wx.navigateTo({ url: '/pages/login/login' })
       return
     }
 
-    wx.request({
-      url: `${app.globalData.baseUrl}/fund/recharge`,
+    request({
+      url: '/fund/recharge',
       method: 'POST',
-      header: { 'Authorization': `Bearer ${token}` },
       data: { amount },
-      success: (res) => {
-        wx.hideLoading()
-        if (res.data.code === 200) {
-          const payData = res.data.data
-          this.requestPayment(payData)
-        } else {
-          wx.showToast({ title: res.data.msg || '充值失败', icon: 'none' })
-        }
-      },
-      fail: () => {
-        wx.hideLoading()
-        wx.showToast({ title: '网络请求失败', icon: 'none' })
-      }
+      loading: true
     })
+      .then((res) => {
+        const payData = res.data
+        this.requestPayment(payData)
+      })
+      .catch((err) => {
+        wx.showToast({ title: err.message || '充值失败', icon: 'none' })
+      })
   },
 
   requestPayment: function (payData) {

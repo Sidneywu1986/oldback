@@ -1,4 +1,5 @@
 const app = getApp()
+const { request } = require('../../utils/request')
 
 Page({
   data: {
@@ -15,32 +16,21 @@ Page({
   },
 
   loadActivities: function () {
-    const token = app.globalData.token
-    if (!token) {
+    if (!app.globalData.token) {
       wx.navigateTo({ url: '/pages/login/login' })
       return
     }
 
-    wx.showLoading({ title: '加载中...' })
-
-    wx.request({
-      url: `${app.globalData.baseUrl}/promotions/user-activities`,
-      method: 'GET',
-      header: { 'Authorization': `Bearer ${token}` },
-      success: (res) => {
-        wx.hideLoading()
-        if (res.data.code === 200) {
-          this.setData({ activities: res.data.data || [] })
-        }
-      },
-      fail: () => {
-        wx.hideLoading()
+    request({ url: '/promotions/user-activities', loading: true })
+      .then((res) => {
+        this.setData({ activities: res.data || [] })
+      })
+      .catch(() => {
         wx.showToast({ title: '加载失败', icon: 'none' })
-      },
-      complete: () => {
+      })
+      .finally(() => {
         this.setData({ loading: false })
-      }
-    })
+      })
   },
 
   getActivityTypeIcon: function (type) {
@@ -90,24 +80,18 @@ Page({
   },
 
   participateActivity: function (activityId) {
-    const token = app.globalData.token
-    if (!token) return
+    if (!app.globalData.token) return
 
-    wx.request({
-      url: `${app.globalData.baseUrl}/promotions/activities/${activityId}/participate`,
-      method: 'POST',
-      header: { 'Authorization': `Bearer ${token}` },
-      success: (res) => {
-        if (res.data.code === 200) {
-          wx.showToast({ title: '参与成功', icon: 'success' })
-          this.loadActivities()
-        } else {
-          wx.showToast({ title: res.data.msg || '参与失败', icon: 'none' })
-        }
-      },
-      fail: () => {
-        wx.showToast({ title: '网络请求失败', icon: 'none' })
-      }
+    request({
+      url: `/promotions/activities/${activityId}/participate`,
+      method: 'POST'
     })
+      .then(() => {
+        wx.showToast({ title: '参与成功', icon: 'success' })
+        this.loadActivities()
+      })
+      .catch((err) => {
+        wx.showToast({ title: err.message || '参与失败', icon: 'none' })
+      })
   }
 })

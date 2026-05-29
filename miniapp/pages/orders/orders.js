@@ -1,4 +1,5 @@
 const app = getApp()
+const { request } = require('../../utils/request')
 
 Page({
   data: {
@@ -29,8 +30,7 @@ Page({
   },
 
   loadOrders: function () {
-    const token = app.globalData.token
-    if (!token) {
+    if (!app.globalData.token) {
       wx.navigateTo({ url: '/pages/login/login' })
       return
     }
@@ -42,28 +42,23 @@ Page({
       'rejected': 2
     }
 
-    wx.request({
-      url: `${app.globalData.baseUrl}/recycle/orders`,
-      method: 'GET',
-      header: { 'Authorization': `Bearer ${token}` },
+    request({
+      url: '/recycle/orders',
       data: {
         page: this.data.page,
         size: this.data.size,
         status: statusMap[this.data.currentTab]
-      },
-      success: (res) => {
-        if (res.data.code === 200) {
-          const data = res.data.data
-          this.setData({
-            orders: data.list || [],
-            loading: false
-          })
-        }
-      },
-      fail: () => {
-        this.setData({ loading: false })
       }
     })
+      .then((res) => {
+        this.setData({
+          orders: res.data.list || [],
+          loading: false
+        })
+      })
+      .catch(() => {
+        this.setData({ loading: false })
+      })
   },
 
   goToDetail: function (e) {

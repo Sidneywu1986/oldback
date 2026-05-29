@@ -1,4 +1,5 @@
 const app = getApp()
+const { request } = require('../../utils/request')
 
 Page({
   data: {
@@ -12,39 +13,22 @@ Page({
   },
 
   loadAccountInfo: function () {
-    const token = app.globalData.token
-    if (!token) {
+    if (!app.globalData.token) {
       wx.navigateTo({ url: '/pages/login/login' })
       return
     }
-
-    wx.request({
-      url: `${app.globalData.baseUrl}/fund/account`,
-      method: 'GET',
-      header: { 'Authorization': `Bearer ${token}` },
-      success: (res) => {
-        if (res.data.code === 200) {
-          this.setData({ account: res.data.data })
-        }
-      }
-    })
+    request({ url: '/fund/account' })
+      .then((res) => {
+        this.setData({ account: res.data })
+      })
   },
 
   loadTransactions: function () {
-    const token = app.globalData.token
-    if (!token) return
-
-    wx.request({
-      url: `${app.globalData.baseUrl}/fund/transactions`,
-      method: 'GET',
-      header: { 'Authorization': `Bearer ${token}` },
-      data: { page: 1, size: 10 },
-      success: (res) => {
-        if (res.data.code === 200) {
-          this.setData({ transactions: res.data.data.list || [] })
-        }
-      }
-    })
+    if (!app.globalData.token) return
+    request({ url: '/fund/transactions', data: { page: 1, size: 10 } })
+      .then((res) => {
+        this.setData({ transactions: res.data.list || [] })
+      })
   },
 
   getTxnIcon: function (type) {

@@ -1,4 +1,5 @@
 const app = getApp()
+const { request } = require('../../utils/request')
 
 Page({
   data: {
@@ -20,45 +21,28 @@ Page({
   },
 
   loadMasterInfo: function () {
-    const token = app.globalData.token
-    if (!token) {
+    if (!app.globalData.token) {
       this.setData({ masterInfo: null })
       return
     }
 
-    wx.request({
-      url: `${app.globalData.baseUrl}/masters/me`,
-      method: 'GET',
-      header: { 'Authorization': `Bearer ${token}` },
-      success: (res) => {
-        if (res.data.code === 200) {
-          this.setData({ masterInfo: res.data.data })
-        } else {
-          this.setData({ masterInfo: null })
-          wx.removeStorageSync('token')
-          app.globalData.token = ''
-        }
-      },
-      fail: () => {
+    request({ url: '/masters/me' })
+      .then((res) => {
+        this.setData({ masterInfo: res.data })
+      })
+      .catch(() => {
         this.setData({ masterInfo: null })
-      }
-    })
+        wx.removeStorageSync('token')
+        app.globalData.token = ''
+      })
   },
 
   loadOrderStats: function () {
-    const token = app.globalData.token
-    if (!token) return
-
-    wx.request({
-      url: `${app.globalData.baseUrl}/recycle/orders/stats`,
-      method: 'GET',
-      header: { 'Authorization': `Bearer ${token}` },
-      success: (res) => {
-        if (res.data.code === 200) {
-          this.setData({ orderStats: res.data.data })
-        }
-      }
-    })
+    if (!app.globalData.token) return
+    request({ url: '/recycle/orders/stats' })
+      .then((res) => {
+        this.setData({ orderStats: res.data })
+      })
   },
 
   goToOrders: function () {
