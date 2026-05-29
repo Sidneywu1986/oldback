@@ -4,9 +4,10 @@ const { request } = require('../../utils/request')
 Page({
   data: {
     currentAddress: '获取位置中...',
-    latitude: 0,
-    longitude: 0,
+    latitude: 39.9042,
+    longitude: 116.4074,
     nearbyOrders: [],
+    markers: [],
     grabCount: 0,
     successRate: 0,
     loading: true
@@ -74,8 +75,28 @@ Page({
       }
     })
       .then((res) => {
+        const orders = res.data || []
+        const markers = orders.map((item, index) => ({
+          id: index,
+          latitude: item.lat || this.data.latitude,
+          longitude: item.lng || this.data.longitude,
+          title: item.parts_name,
+          iconPath: '/images/marker.png',
+          width: 30,
+          height: 30,
+          callout: {
+            content: `${item.parts_name} ¥${item.amount}`,
+            color: '#1F2937',
+            fontSize: 12,
+            borderRadius: 8,
+            bgColor: '#FFFFFF',
+            padding: 8,
+            display: 'ALWAYS'
+          }
+        }))
         this.setData({
-          nearbyOrders: res.data || [],
+          nearbyOrders: orders,
+          markers: markers,
           loading: false
         })
       })
@@ -135,5 +156,13 @@ Page({
   showOrderDetail: function (e) {
     const order = e.currentTarget.dataset.order
     wx.navigateTo({ url: `/pages/orders/detail?id=${order.id}` })
+  },
+
+  onMarkerTap: function (e) {
+    const markerId = e.markerId
+    const order = this.data.nearbyOrders[markerId]
+    if (order) {
+      wx.navigateTo({ url: `/pages/orders/detail?id=${order.id}` })
+    }
   }
 })

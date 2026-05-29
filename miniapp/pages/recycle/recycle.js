@@ -164,40 +164,54 @@ Page({
   submitOrder: function () {
     if (!this.data.canSubmit) return
 
-    const token = app.globalData.token
-    if (!token) {
+    if (!app.globalData.token) {
       wx.navigateTo({ url: '/pages/login/login' })
       return
     }
 
-    const data = {
-      parts_type: this.data.selectedCategory.id,
-      parts_name: this.data.formData.partsName,
-      parts_code: this.data.formData.partsCode,
-      quantity: this.data.formData.quantity,
-      weight: this.data.formData.weight ? parseFloat(this.data.formData.weight) : null,
-      remark: this.data.formData.remark,
-      images: this.data.images.join(',')
+    const submit = (lat, lng, address) => {
+      const data = {
+        parts_type: this.data.selectedCategory.id,
+        parts_name: this.data.formData.partsName,
+        parts_code: this.data.formData.partsCode,
+        quantity: this.data.formData.quantity,
+        weight: this.data.formData.weight ? parseFloat(this.data.formData.weight) : null,
+        remark: this.data.formData.remark,
+        images: this.data.images.join(','),
+        lat: lat,
+        lng: lng,
+        address: address
+      }
+
+      request({
+        url: '/recycle/orders',
+        method: 'POST',
+        data: data,
+        loading: true
+      })
+        .then(() => {
+          wx.showModal({
+            title: '提交成功',
+            content: '回收申请已提交，请等待审核',
+            showCancel: false,
+            success: () => {
+              wx.switchTab({ url: '/pages/orders/orders' })
+            }
+          })
+        })
+        .catch((err) => {
+          wx.showToast({ title: err.message || '提交失败', icon: 'none' })
+        })
     }
 
-    request({
-      url: '/recycle/orders',
-      method: 'POST',
-      data: data,
-      loading: true
+    wx.getLocation({
+      type: 'gcj02',
+      success: (res) => {
+        submit(res.latitude, res.longitude, '')
+      },
+      fail: () => {
+        submit(null, null, '')
+      }
     })
-      .then(() => {
-        wx.showModal({
-          title: '提交成功',
-          content: '回收申请已提交，请等待审核',
-          showCancel: false,
-          success: () => {
-            wx.switchTab({ url: '/pages/orders/orders' })
-          }
-        })
-      })
-      .catch((err) => {
-        wx.showToast({ title: err.message || '提交失败', icon: 'none' })
-      })
   }
 })

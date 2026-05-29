@@ -13,6 +13,9 @@ class RecycleCreate(BaseModel):
     new_parts_img: Optional[str] = None
     work_img: Optional[str] = None
     user_keep: int = 0
+    lat: Optional[float] = None
+    lng: Optional[float] = None
+    address: Optional[str] = None
 
 class RecycleAuditAction(BaseModel):
     action: str  # pass/reject/return/confirm/dispose
