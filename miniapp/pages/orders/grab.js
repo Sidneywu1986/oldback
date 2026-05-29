@@ -6,7 +6,9 @@ Page({
     currentAddress: '获取位置中...',
     latitude: 39.9042,
     longitude: 116.4074,
+    scale: 13,
     nearbyOrders: [],
+    rawMarkers: [],
     markers: [],
     grabCount: 0,
     successRate: 0,
@@ -76,26 +78,18 @@ Page({
     })
       .then((res) => {
         const orders = res.data || []
-        const markers = orders.map((item, index) => ({
-          id: index,
+        const rawMarkers = orders.map((item, index) => ({
+          _idx: index,
           latitude: item.lat || this.data.latitude,
           longitude: item.lng || this.data.longitude,
-          title: item.parts_name,
-          iconPath: '/images/marker.png',
-          width: 30,
-          height: 30,
-          callout: {
-            content: `${item.parts_name} ¥${item.amount}`,
-            color: '#1F2937',
-            fontSize: 12,
-            borderRadius: 8,
-            bgColor: '#FFFFFF',
-            padding: 8,
-            display: 'ALWAYS'
-          }
+          parts_name: item.parts_name,
+          amount: item.amount,
+          order: item
         }))
+        const markers = this.clusterMarkers(rawMarkers, this.data.scale)
         this.setData({
           nearbyOrders: orders,
+          rawMarkers: rawMarkers,
           markers: markers,
           loading: false
         })
@@ -103,6 +97,115 @@ Page({
       .catch(() => {
         this.setData({ loading: false })
       })
+  },
+
+  // 网格聚类：根据缩放级别合并近距离标记
+  clusterMarkers: function (rawMarkers, scale) {
+    if (rawMarkers.length <= 10 || scale >= 15) {
+      return rawMarkers.map((m) => ({
+        id: m._idx,
+        latitude: m.latitude,
+        longitude: m.longitude,
+        title: m.parts_name,
+        iconPath: '/images/marker.png',
+        width: 30,
+        height: 30,
+        callout: {
+          content: `${m.parts_name} ¥${m.amount}`,
+          color: '#1F2937',
+          fontSize: 12,
+          borderRadius: 8,
+          bgColor: '#FFFFFF',
+          padding: 8,
+          display: 'ALWAYS'
+        }
+      }))
+    }
+
+    // 网格大小根据 scale 调整：scale 越小，网格越大
+    // 0.001 度 ≈ 111m
+    const gridSize = scale >= 13 ? 0.003 : 0.006
+
+    const clusters = {}
+    rawMarkers.forEach((m) => {
+      const gx = Math.floor(m.longitude / gridSize)
+      const gy = Math.floor(m.latitude / gridSize)
+      const key = `${gx},${gy}`
+      if (!clusters[key]) {
+        clusters[key] = { items: [], totalLat: 0, totalLng: 0 }
+      }
+      clusters[key].items.push(m)
+      clusters[key].totalLat += m.latitude
+      clusters[key].totalLng += m.longitude
+    })
+
+    let clusterIdx = 0
+    const markers = []
+    Object.values(clusters).forEach((c) => {
+      const count = c.items.length
+      const avgLat = c.totalLat / count
+      const avgLng = c.totalLng / count
+
+      if (count === 1) {
+        const m = c.items[0]
+        markers.push({
+          id: m._idx,
+          latitude: avgLat,
+          longitude: avgLng,
+          title: m.parts_name,
+          iconPath: '/images/marker.png',
+          width: 30,
+          height: 30,
+          callout: {
+            content: `${m.parts_name} ¥${m.amount}`,
+            color: '#1F2937',
+            fontSize: 12,
+            borderRadius: 8,
+            bgColor: '#FFFFFF',
+            padding: 8,
+            display: 'ALWAYS'
+          }
+        })
+      } else {
+        markers.push({
+          id: 10000 + clusterIdx,
+          latitude: avgLat,
+          longitude: avgLng,
+          title: `${count}个订单`,
+          iconPath: '/images/cluster.png',
+          width: 44,
+          height: 44,
+          callout: {
+            content: `附近${count}个回收订单`,
+            color: '#1F2937',
+            fontSize: 12,
+            borderRadius: 8,
+            bgColor: '#FFFFFF',
+            padding: 8,
+            display: 'ALWAYS'
+          }
+        })
+        clusterIdx++
+      }
+    })
+
+    return markers
+  },
+
+  // 监听地图视野变化（缩放/拖动）
+  onRegionChange: function (e) {
+    if (e.type === 'end') {
+      const mapCtx = wx.createMapContext('nearbyMap')
+      mapCtx.getScale({
+        success: (res) => {
+          const newScale = Math.round(res.scale)
+          if (newScale !== this.data.scale) {
+            const markers = this.clusterMarkers(this.data.rawMarkers, newScale)
+            this.setData({ scale: newScale, markers: markers })
+          }
+        }
+      })
+    }
   },
 
   loadGrabStats: function () {
@@ -160,6 +263,13 @@ Page({
 
   onMarkerTap: function (e) {
     const markerId = e.markerId
+    if (markerId >= 10000) {
+      // 点击聚合标记，放大地图
+      this.setData({ scale: 16 })
+      const markers = this.clusterMarkers(this.data.rawMarkers, 16)
+      this.setData({ markers: markers })
+      return
+    }
     const order = this.data.nearbyOrders[markerId]
     if (order) {
       wx.navigateTo({ url: `/pages/orders/detail?id=${order.id}` })

@@ -30,11 +30,16 @@
       id="nearbyMap"
       longitude="{{longitude}}"
       latitude="{{latitude}}"
-      scale="13"
+      scale="{{scale}}"
       markers="{{markers}}"
       show-location
+      show-compass
+      show-scale
+      enable-zoom
+      enable-scroll
       style="width: 100%; height: 400rpx;"
       bindmarkertap="onMarkerTap"
+      bindregionchange="onRegionChange"
     ></map>
   </view>
 
