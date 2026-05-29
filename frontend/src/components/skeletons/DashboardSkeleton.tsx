@@ -1,9 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function SkeletonLayout() {
+export default function DashboardSkeleton() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Sidebar skeleton */}
+      {/* Sidebar */}
       <div className="fixed left-0 top-0 h-full w-60 border-r bg-white p-4">
         <Skeleton className="h-8 w-32 mb-8" />
         <div className="space-y-3">
@@ -16,15 +16,14 @@ export default function SkeletonLayout() {
         </div>
       </div>
 
-      {/* Main area */}
       <div className="ml-60">
-        {/* Header skeleton */}
+        {/* Header */}
         <div className="fixed left-60 right-0 top-0 h-14 border-b bg-white px-6 flex items-center justify-between">
           <Skeleton className="h-4 w-40" />
           <Skeleton className="h-8 w-8 rounded-full" />
         </div>
 
-        {/* Content skeleton */}
+        {/* Dashboard content */}
         <main className="pt-14 p-6 min-h-screen">
           {/* Stat cards */}
           <div className="grid grid-cols-4 gap-4 mb-6">
@@ -37,7 +36,19 @@ export default function SkeletonLayout() {
             ))}
           </div>
 
-          {/* Table skeleton */}
+          {/* Charts row */}
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="rounded-lg border p-4 space-y-3">
+              <Skeleton className="h-5 w-24" />
+              <Skeleton className="h-[200px] w-full rounded" />
+            </div>
+            <div className="rounded-lg border p-4 space-y-3">
+              <Skeleton className="h-5 w-24" />
+              <Skeleton className="h-[200px] w-full rounded" />
+            </div>
+          </div>
+
+          {/* Table */}
           <div className="rounded-lg border">
             <div className="p-4 border-b space-y-2">
               <Skeleton className="h-5 w-32" />
