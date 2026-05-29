@@ -1,10 +1,16 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
+from app.core.dependencies import get_current_active_user
 from app.schemas.base import BaseResponse, PaginatedResponse
 from app.schemas.fund import FundAccountOut, FundTransactionOut, FundAward, FundWithdrawApply, FundWithdrawAudit
 from app.services import fund_service
 from app.services import fund_transaction_service
+from app.models.master import Master
+from app.models.fund_account import FundAccount
+from app.models.fund_transaction import FundTransaction
+from decimal import Decimal
+from datetime import datetime
 
 router = APIRouter(prefix="/api/v1/fund", tags=["资金管理"])
 
@@ -52,3 +58,67 @@ def apply_withdraw(req: FundWithdrawApply, db: Session = Depends(get_db)):
 def audit_withdraw(txn_id: int, req: FundWithdrawAudit, db: Session = Depends(get_db)):
     result = fund_transaction_service.audit_withdraw(db, txn_id, req)
     return BaseResponse(message=result["message"])
+
+
+@router.get("/account", response_model=BaseResponse)
+def get_my_account(
+    current_user = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    master = db.query(Master).filter(Master.user_id == current_user.id, Master.is_deleted == 0).first()
+    if not master:
+        raise HTTPException(status_code=404, detail="未找到师傅信息")
+    data = fund_service.get_account(db, master.id)
+    return BaseResponse(data=data)
+
+
+@router.post("/recharge", response_model=BaseResponse)
+def recharge(
+    req: FundAward,
+    db: Session = Depends(get_db)
+):
+    """充值（模拟）"""
+    account = db.query(FundAccount).filter(FundAccount.master_id == req.master_id).first()
+    if not account:
+        raise HTTPException(status_code=404, detail="账户不存在")
+    account.balance = Decimal(str(account.balance)) + req.amount
+    account.total_income = Decimal(str(account.total_income)) + req.amount
+    txn = FundTransaction(
+        account_id=account.id,
+        master_id=req.master_id,
+        txn_type="award",
+        amount=req.amount,
+        balance_after=account.balance,
+        remark=f"充值: {req.remark or ''}",
+        status=1,
+        create_time=datetime.utcnow(),
+    )
+    db.add(txn)
+    db.commit()
+    return BaseResponse(message="充值成功")
+
+
+@router.post("/withdraw", response_model=BaseResponse)
+def withdraw(
+    req: FundWithdrawApply,
+    db: Session = Depends(get_db)
+):
+    """提现申请（简化路径）"""
+    result = fund_transaction_service.apply_withdraw(db, req)
+    return BaseResponse(message=result["message"])
+
+
+@router.get("/points-records", response_model=BaseResponse)
+def get_points_records(
+    current_user = Depends(get_current_active_user),
+    db: Session = Depends(get_db),
+    page: int = 1, page_size: int = 20
+):
+    """获取师傅积分/资金变动记录"""
+    master = db.query(Master).filter(Master.user_id == current_user.id, Master.is_deleted == 0).first()
+    if not master:
+        raise HTTPException(status_code=404, detail="未找到师傅信息")
+    data = fund_transaction_service.list_transactions(
+        db, page=page, page_size=page_size, master_id=master.id
+    )
+    return BaseResponse(data=data)

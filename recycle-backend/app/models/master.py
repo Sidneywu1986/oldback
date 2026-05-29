@@ -7,6 +7,7 @@ class Master(Base):
     __tablename__ = "masters"
 
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
     name = Column(String(50), nullable=False)
     phone = Column(String(20), nullable=False)
     id_card = Column(String(18))
@@ -25,5 +26,6 @@ class Master(Base):
     is_deleted = Column(Integer, default=0, nullable=False)
 
     department = relationship("Department")
+    user = relationship("User")
     recycle_orders = relationship("RecycleOrder", back_populates="master")
     fund_account = relationship("FundAccount", back_populates="master", uselist=False)

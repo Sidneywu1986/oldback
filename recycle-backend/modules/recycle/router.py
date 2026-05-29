@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
+from app.core.dependencies import get_current_active_user
 from app.schemas.base import BaseResponse
 from app.schemas.recycle import RecycleCreate, RecycleAuditAction, RecyclePointsAward, RecycleOut
 from app.services.recycle_service import (
@@ -13,6 +14,8 @@ from app.services.recycle_service import (
     award_points,
     get_recycle_audits,
 )
+from app.models.recycle_order import RecycleOrder
+from app.models.master import Master
 
 router = APIRouter(prefix="/api/v1/recycle", tags=["回收管理"])
 
@@ -59,3 +62,48 @@ def award_points_route(recycle_id: int, req: RecyclePointsAward, db: Session = D
 @router.get("/{recycle_id}/audits")
 def get_recycle_audit_list(recycle_id: int, db: Session = Depends(get_db)):
     return BaseResponse(data=get_recycle_audits(db, recycle_id))
+
+
+@router.get("/orders/nearby", response_model=BaseResponse)
+def get_nearby_orders(
+    db: Session = Depends(get_db),
+    page: int = 1, page_size: int = 20
+):
+    """获取附近可抢订单（返回待审核订单）"""
+    query = db.query(RecycleOrder).filter(RecycleOrder.is_deleted == 0, RecycleOrder.status == 0)
+    total = query.count()
+    items = query.order_by(RecycleOrder.create_time.desc()).offset((page - 1) * page_size).limit(page_size).all()
+    return BaseResponse(data={"total": total, "list": [get_recycle(db, item.id) for item in items]})
+
+
+@router.get("/orders/grab-stats", response_model=BaseResponse)
+def get_grab_stats(
+    current_user = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """获取师傅抢单统计"""
+    master = db.query(Master).filter(Master.user_id == current_user.id, Master.is_deleted == 0).first()
+    if not master:
+        raise HTTPException(status_code=404, detail="未找到师傅信息")
+    total = db.query(RecycleOrder).filter(RecycleOrder.master_id == master.id, RecycleOrder.is_deleted == 0).count()
+    pending = db.query(RecycleOrder).filter(RecycleOrder.master_id == master.id, RecycleOrder.status == 0, RecycleOrder.is_deleted == 0).count()
+    done = db.query(RecycleOrder).filter(RecycleOrder.master_id == master.id, RecycleOrder.status.in_([3, 4, 7]), RecycleOrder.is_deleted == 0).count()
+    return BaseResponse(data={"total": total, "pending": pending, "done": done})
+
+
+@router.post("/orders/{order_id}/grab", response_model=BaseResponse)
+def grab_order(
+    order_id: int,
+    current_user = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """师傅抢单"""
+    master = db.query(Master).filter(Master.user_id == current_user.id, Master.is_deleted == 0).first()
+    if not master:
+        raise HTTPException(status_code=404, detail="未找到师傅信息")
+    order = db.query(RecycleOrder).filter(RecycleOrder.id == order_id, RecycleOrder.is_deleted == 0).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="订单不存在")
+    order.master_id = master.id
+    db.commit()
+    return BaseResponse(message="抢单成功")

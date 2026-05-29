@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
+from app.core.dependencies import get_current_active_user
 from app.schemas.base import BaseResponse, PaginatedResponse
 from app.schemas.master import MasterCreate, MasterUpdate, MasterOut
 from app.services.master_service import (
@@ -13,8 +14,21 @@ from app.services.master_service import (
     update_master_level as svc_update_master_level,
     get_master_recycles as svc_get_master_recycles,
 )
+from app.models.master import Master
 
 router = APIRouter(prefix="/api/v1/masters", tags=["师傅管理"])
+
+
+@router.get("/me", response_model=BaseResponse)
+def get_my_master(
+    current_user = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    master = db.query(Master).filter(Master.user_id == current_user.id, Master.is_deleted == 0).first()
+    if not master:
+        raise HTTPException(status_code=404, detail="未找到师傅信息")
+    data = svc_get_master(db, master.id)
+    return BaseResponse(data=data)
 
 
 @router.get("", response_model=BaseResponse[PaginatedResponse[MasterOut]])

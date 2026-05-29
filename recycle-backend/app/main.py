@@ -13,6 +13,8 @@ import pkgutil
 import importlib
 from pathlib import Path
 
+# Ensure all models are registered before creating tables
+import app.models
 # Create tables
 Base.metadata.create_all(bind=engine)
 
@@ -249,12 +251,15 @@ def seed_data():
             ("徐师傅", "13800138011", "110101199011111234", 4, "初级", "[\"油烟机\"]", "房山区", 0),
             ("孙师傅", "13800138012", "110101199012121234", 4, "高级", "[\"空调\",\"电视\"]", "门头沟区", 2),
         ]
-        for name, phone, id_card, dept_id, level, skills, area, status in masters_data:
+        for idx, (name, phone, id_card, dept_id, level, skills, area, status) in enumerate(masters_data):
             from datetime import datetime
             m = Master(name=name, phone=phone, id_card=id_card, dept_id=dept_id, level=level,
                       skill_tags=skills, service_area=area, status=status,
                       credit_score=random.randint(60, 100), recycle_count=random.randint(0, 50),
                       points_balance=random.randint(0, 5000), join_date=datetime.utcnow())
+            # 关联第一个师傅到 admin 用户，方便小程序 /masters/me 调试
+            if idx == 0:
+                m.user_id = admin.id
             db.add(m)
         db.commit()
         

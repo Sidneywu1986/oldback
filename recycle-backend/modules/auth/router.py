@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Request, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
+from app.core.dependencies import get_current_active_user
 from app.schemas.base import BaseResponse
 from app.schemas.auth import LoginRequest, LoginResponse
 from app.services.auth_service import authenticate_user, change_password
@@ -42,3 +43,16 @@ def login(req: LoginRequest, db: Session = Depends(get_db), request: Request = N
             error_msg=e.detail
         ))
         raise
+
+
+@router.get("/me", response_model=BaseResponse)
+def get_me(current_user = Depends(get_current_active_user)):
+    return BaseResponse(data={
+        "id": current_user.id,
+        "username": current_user.username,
+        "real_name": current_user.real_name,
+        "phone": current_user.phone,
+        "avatar": current_user.avatar,
+        "roles": [{"id": r.id, "name": r.role_name, "code": r.role_code} for r in current_user.roles],
+        "is_super": current_user.is_super,
+    })
