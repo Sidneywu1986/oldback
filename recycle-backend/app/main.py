@@ -274,11 +274,17 @@ def seed_data():
         db.commit()
         
         # 8. Recycle Orders
+        import math
         parts_names = ["压缩机", "主板", "电容", "电机", "风扇", "换热器", "传感器", "控制面板", "电源模块", "显示屏"]
         device_types = ["空调", "冰箱", "洗衣机", "热水器", "电视", "油烟机"]
+        areas = ["朝阳区", "海淀区", "东城区", "西城区", "丰台区", "石景山区", "通州区", "昌平区"]
+        # Beijing center ~39.9, 116.4, generate random offset within ~20km
         for i in range(50):
             m = random.choice(all_masters)
             status = random.choices([0,1,2,3,4,5,6,7], weights=[15,20,5,15,10,5,5,25])[0]
+            # Random lat/lng around Beijing (±0.15 deg ≈ ±15km)
+            lat = 39.9042 + random.uniform(-0.15, 0.15)
+            lng = 116.4074 + random.uniform(-0.15, 0.15)
             order = RecycleOrder(
                 order_no=f"R{datetime.now().strftime('%Y%m%d%H%M%S')}{i+1000}",
                 master_id=m.id,
@@ -291,6 +297,9 @@ def seed_data():
                 points=random.randint(10, 200),
                 point_status=1 if status == 7 else 0,
                 amount=random.randint(50, 500),
+                lat=round(lat, 6),
+                lng=round(lng, 6),
+                address=f"北京市{random.choice(areas)}回收点{i+1}号",
                 create_time=datetime.utcnow() - timedelta(days=random.randint(0, 60))
             )
             db.add(order)

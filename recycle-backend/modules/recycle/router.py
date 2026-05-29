@@ -64,16 +64,46 @@ def get_recycle_audit_list(recycle_id: int, db: Session = Depends(get_db)):
     return BaseResponse(data=get_recycle_audits(db, recycle_id))
 
 
+import math
+
 @router.get("/orders/nearby", response_model=BaseResponse)
 def get_nearby_orders(
     db: Session = Depends(get_db),
+    latitude: float = None,
+    longitude: float = None,
+    radius: int = 5000,
     page: int = 1, page_size: int = 20
 ):
-    """获取附近可抢订单（返回待审核订单）"""
+    """获取附近可抢订单，按距离排序"""
     query = db.query(RecycleOrder).filter(RecycleOrder.is_deleted == 0, RecycleOrder.status == 0)
-    total = query.count()
-    items = query.order_by(RecycleOrder.create_time.desc()).offset((page - 1) * page_size).limit(page_size).all()
-    return BaseResponse(data={"total": total, "list": [get_recycle(db, item.id) for item in items]})
+    items = query.all()
+
+    def haversine(lat1, lon1, lat2, lon2):
+        R = 6371000
+        phi1 = math.radians(lat1)
+        phi2 = math.radians(lat2)
+        dphi = math.radians(lat2 - lat1)
+        dlambda = math.radians(lon2 - lon1)
+        a = math.sin(dphi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2) ** 2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        return R * c
+
+    result = []
+    for item in items:
+        if item.lat is not None and item.lng is not None and latitude is not None and longitude is not None:
+            distance = haversine(latitude, longitude, float(item.lat), float(item.lng))
+            if distance <= radius:
+                data = get_recycle(db, item.id)
+                result.append({**data.model_dump(), "distance": round(distance / 1000, 2)})
+        else:
+            data = get_recycle(db, item.id)
+            result.append({**data.model_dump(), "distance": None})
+
+    result.sort(key=lambda x: x["distance"] if x["distance"] is not None else 99999)
+    total = len(result)
+    start = (page - 1) * page_size
+    end = start + page_size
+    return BaseResponse(data={"total": total, "list": result[start:end]})
 
 
 @router.get("/orders/grab-stats", response_model=BaseResponse)

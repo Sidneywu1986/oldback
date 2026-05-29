@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router";
 import { useState, useEffect } from "react";
 import type { RouteObject } from "react-router";
+import SkeletonLayout from "@/components/SkeletonLayout";
 
 // Auto-discover frontend routes from modules/ (async = code-split per module)
 const routeModules = import.meta.glob<{ routes: RouteObject[] }>(
@@ -21,11 +22,7 @@ function App() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
-    );
+    return <SkeletonLayout />;
   }
 
   return (

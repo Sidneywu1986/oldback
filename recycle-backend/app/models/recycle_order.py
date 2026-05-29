@@ -24,6 +24,9 @@ class RecycleOrder(Base):
     point_status = Column(Integer, default=0)  # 0=未发放 1=已发放 2=冻结
     amount = Column(DECIMAL(10, 2), default=0)
     amount_status = Column(Integer, default=0)
+    lat = Column(DECIMAL(10, 6), nullable=True)
+    lng = Column(DECIMAL(10, 6), nullable=True)
+    address = Column(String(255), nullable=True)
     create_time = Column(DateTime, default=datetime.utcnow)
     update_time = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     is_deleted = Column(Integer, default=0, nullable=False)

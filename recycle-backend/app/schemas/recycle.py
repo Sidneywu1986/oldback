@@ -41,6 +41,9 @@ class RecycleOut(BaseModel):
     point_status: int
     amount: Decimal
     amount_status: int
+    lat: Optional[float] = None
+    lng: Optional[float] = None
+    address: Optional[str] = None
     create_time: datetime
     update_time: datetime
     class Config:
